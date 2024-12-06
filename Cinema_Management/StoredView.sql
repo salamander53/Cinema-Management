@@ -10,13 +10,21 @@
 -- FROM Salary
 
 
-CREATE VIEW ViewEmployee
+CREATE OR ALTER VIEW ViewEmployee
 AS
-    SELECT e.emp_id, e.emp_name, e.emp_phone, e.emp_address, p.position_name, wt.workType_name
-    FROM Employee e
-        JOIN Employee_CurrentPosition cp ON e.emp_id = cp.emp_id
-        JOIN Employee_Position p ON p.position_id = cp.position_id
-        JOIN Employee_WorkType wt ON cp.workType_id = wt.workType_id
+    SELECT
+        e.emp_id,
+        e.emp_name,
+        e.emp_phone,
+        e.emp_address,
+        p.position_name,
+        wt.workType_name
+    FROM
+        Employee e
+        LEFT JOIN Employee_CurrentPosition cp ON e.emp_id = cp.emp_id
+        LEFT JOIN Employee_Position p ON cp.position_id = p.position_id
+        LEFT JOIN Employee_WorkType wt ON cp.workType_id = wt.workType_id;
+
 
 GO
 

@@ -9,15 +9,21 @@
 -- SELECT *
 -- FROM Salary
 
-DROP VIEW ViewEmployee
-
 
 CREATE VIEW ViewEmployee
 AS
-    SELECT e.emp_id, e.emp_name, e.emp_birth_date, e.emp_cccd, e.emp_address, e.emp_phone
+    SELECT
+        e.emp_id,
+        e.emp_name,
+        e.emp_birth_date,
+        e.emp_cccd,
+        e.emp_address,
+        e.emp_phone,
+        ew.workhour,
+        s.salary1hour,
+        (ew.workhour * s.salary1hour) AS salary
     FROM Employee e
-        JOIN Employee_WorkHour ew ON ew.workhour
-    WHERE
-
-SELECT *
-FROM ViewEmployee
+        JOIN Employee_WorkHour ew ON ew.emp_id = e.emp_id
+        JOIN Salary1hour s ON e.workType_id = s.workType_id AND e.position_id = s.position_id
+        JOIN Position p ON s.position_id = p.position_id
+        JOIN WorkType wt ON s.workType_id = wt.workType_id;

@@ -1,0 +1,11 @@
+c:\Users\Do Truong Khoa\Desktop\code\BTL_DATABASE\Cinema_Management\bin\Debug\Cinema_Management.dacpac
+c:\Users\Do Truong Khoa\Desktop\code\BTL_DATABASE\Cinema_Management\bin\Debug\Cinema_Management.dll
+c:\Users\Do Truong Khoa\Desktop\code\BTL_DATABASE\Cinema_Management\bin\Debug\Cinema_Management.pdb
+c:\Users\Do Truong Khoa\Desktop\code\BTL_DATABASE\Cinema_Management\obj\Debug\Cinema_Management.sqlproj.AssemblyReference.cache
+c:\Users\Do Truong Khoa\Desktop\code\BTL_DATABASE\Cinema_Management\obj\Debug\Cinema_Management.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\Do Truong Khoa\Desktop\code\BTL_DATABASE\Cinema_Management\obj\Debug\Model.xml
+c:\Users\Do Truong Khoa\Desktop\code\BTL_DATABASE\Cinema_Management\obj\Debug\refactor.xml
+c:\Users\Do Truong Khoa\Desktop\code\BTL_DATABASE\Cinema_Management\obj\Debug\postdeploy.sql
+c:\Users\Do Truong Khoa\Desktop\code\BTL_DATABASE\Cinema_Management\obj\Debug\predeploy.sql
+c:\Users\Do Truong Khoa\Desktop\code\BTL_DATABASE\Cinema_Management\obj\Debug\Cinema_Management.dll
+c:\Users\Do Truong Khoa\Desktop\code\BTL_DATABASE\Cinema_Management\obj\Debug\Cinema_Management.pdb

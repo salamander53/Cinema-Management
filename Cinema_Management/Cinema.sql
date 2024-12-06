@@ -6,4 +6,9 @@ CREATE TABLE [dbo].[Cinema]
   -- Tên rạp chiếu
   Address NVARCHAR(255) NOT NULL,
   -- Địa chỉ
-)
+);
+
+-- SELECT * FROM Cinema;
+
+
+  

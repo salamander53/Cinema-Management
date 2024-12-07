@@ -1,6 +1,5 @@
 import { DataSource } from 'typeorm';
 import { Logger } from '@nestjs/common';
-import { Employee } from 'src/Etities/Employee/Employee.entity';
 
 const logger = new Logger('DatabaseConnection');
 
@@ -15,7 +14,7 @@ export const databaseProviders = [
         username: 'khoa123',
         password: 'khoa@123',
         database: 'Cinema',
-        entities: [Employee],
+        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: false,
         options: {
           encrypt: true,

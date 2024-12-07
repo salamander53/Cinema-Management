@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
+import { employee_currentposition } from './CurrentPosition.entity';
+import { employee_workhour } from './WorkHour.entity';
 
 @Entity()
 export class Employee {
@@ -19,4 +21,13 @@ export class Employee {
 
   @Column({ unique: true })
   emp_phone: string;
+
+  @OneToMany(
+    () => employee_currentposition,
+    (currentPosition) => currentPosition.employee,
+  )
+  currentPositions: employee_currentposition[];
+
+  @OneToMany(() => employee_workhour, (workHour) => workHour.employee)
+  workHours: employee_workhour[];
 }

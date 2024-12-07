@@ -3,9 +3,19 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { EmployeeModule } from './employee/Modules/employee.module';
+import { CurrentPositionModule } from './employee/Modules/CurrentPostition.module';
+import { WorkHourModule } from './employee/Modules/WorkHour.module';
+import { CinemaModule } from './Cinema/Modules/cinema.module';
 
 @Module({
-  imports: [DatabaseModule, EmployeeModule],
+  imports: [
+    DatabaseModule,
+    EmployeeModule,
+    CurrentPositionModule,
+    WorkHourModule,
+
+    CinemaModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

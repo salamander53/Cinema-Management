@@ -8,6 +8,7 @@ import {
   TableForeignKey,
 } from 'typeorm';
 import { Employee } from './Employee.entity';
+import { Cinema } from '../Cinema/Cinema.entity';
 
 @Entity()
 export class employee_workhour {
@@ -26,9 +27,9 @@ export class employee_workhour {
   @JoinColumn({ name: 'emp_id' })
   employee: Employee;
 
-  // @ManyToOne(() => Cinema, (cinema) => cinema.workHours, {
-  //   onDelete: 'CASCADE',
-  // })
-  // @JoinColumn({ name: 'cinema_id' })
-  // cinema: Cinema;
+  @ManyToOne(() => Cinema, (cinema) => cinema.workHour, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'cinema_id' })
+  cinema: Cinema;
 }

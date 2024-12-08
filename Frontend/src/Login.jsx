@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
+import AxiosInstance from "./Components/AxiosInstance";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,12 +17,20 @@ const Login = () => {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // Điều hướng đến trang Home (bất kỳ tài khoản nào cũng được)
-    if (username && password) {
-      navigate("/home"); // Chuyển đến trang Home
-    } else {
-      alert("Vui lòng nhập tài khoản và mật khẩu!");
-    }
+    AxiosInstance.post(`auth/login/`, {
+      username: username,
+      password: password,
+    })
+      .then((res) => {
+        console.log(res.status);
+        localStorage.setItem("Token", res.data);
+        navigate(`/home`);
+        toast.success("Login successful!");
+      })
+      .catch((error) => {
+        console.error("There was an error logging in: ", error);
+        toast.error("Login failed!");
+      });
   };
 
   return (

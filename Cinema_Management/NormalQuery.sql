@@ -1,4 +1,6 @@
--- Delete rows from table 'Employee'
--- Select rows from a Table or ' in schema 'SchemaName'
-SELECT *
-FROM Employee
+CREATE TABLE [user]
+(
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    username VARCHAR(15) NOT NULL UNIQUE,
+    password VARCHAR(15) NOT NULL
+);

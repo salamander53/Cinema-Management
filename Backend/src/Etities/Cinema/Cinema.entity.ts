@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { employee_workhour } from '../Employee/WorkHour.entity';
 
 @Entity()
 export class Cinema {
@@ -10,4 +11,7 @@ export class Cinema {
 
   @Column()
   cinema_address: string;
+
+  @OneToMany(() => employee_workhour, (workHour) => workHour.cinema)
+  workHour: employee_workhour;
 }

@@ -11,8 +11,8 @@ import { CinemaModule } from './Cinema/Modules/cinema.module';
   imports: [
     DatabaseModule,
     EmployeeModule,
-    CurrentPositionModule,
-    WorkHourModule,
+    // CurrentPositionModule,
+    // WorkHourModule,
 
     CinemaModule,
   ],

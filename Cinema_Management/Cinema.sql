@@ -10,5 +10,9 @@ CREATE TABLE [dbo].[Cinema]
 
 -- SELECT * FROM Cinema;
 
-
+INSERT INTO Cinema
+  (cinema_id, cinema_name, cinema_address)
+VALUES
+  ('CIN01', 'CGV', 'District 7 Ward 10 HCM'),
+  ('CIN02', 'Galaxy', 'District 10 Ward 7 HCM');
   

@@ -1,28 +1,40 @@
--- Write your own SQL object definition here, and it'll be included in your package.
-CREATE TRIGGER [dbo].[Employee_ID_AutoIncrement]
+CREATE TRIGGER trg_InsertEmployee
 ON Employee
 INSTEAD OF INSERT
 AS
 BEGIN
-    DECLARE @prefix VARCHAR(10) = 'EMP';
-    DECLARE @max_id INT;
-    DECLARE @new_id VARCHAR(10);
+    DECLARE @NextValue INT;
+    DECLARE @Prefix NVARCHAR(3) = 'EMP';
 
-    -- Lấy giá trị số lớn nhất từ emp_id hiện tại
-    SELECT @max_id = ISNULL(MAX(CAST(SUBSTRING(emp_id, 4, LEN(emp_id) - 3) AS INT)), 0)
-    FROM Employee;
+    -- Lấy giá trị tăng dần hiện tại từ bảng Sequence
+    SELECT @NextValue = seq_value
+    FROM Sequence
+    WHERE seq_name = 'Employee';
 
-    -- Tăng giá trị lớn nhất lên 1
-    SET @max_id = @max_id + 1;
+    -- Cập nhật Sequence với số lượng bản ghi được chèn
+    UPDATE Sequence
+    SET seq_value = seq_value + (SELECT COUNT(*)
+    FROM inserted)
+    WHERE seq_name = 'Employee';
 
-    -- Tạo ID mới theo định dạng PREFIX + số thứ tự 3 ký số
-    SET @new_id = @prefix + RIGHT('000' + CAST(@max_id AS VARCHAR), 3);
-
-    -- Thêm bản ghi mới vào bảng Employee
+    -- Tạo và chèn các emp_id dựa trên giá trị tăng dần
+    WITH
+        NumberedRows
+        AS
+        (
+            SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) - 1 AS RowNum, *
+            FROM inserted
+        )
     INSERT INTO Employee
         (emp_id, emp_name, emp_birth_date, emp_cccd, emp_address, emp_phone)
-    SELECT @new_id, emp_name, emp_birth_date, emp_cccd, emp_address, emp_phone
-    FROM inserted;
+    SELECT
+        @Prefix + RIGHT('0000' + CAST(@NextValue + RowNum AS VARCHAR), 4),
+        emp_name,
+        emp_birth_date,
+        emp_cccd,
+        emp_address,
+        emp_phone
+    FROM NumberedRows;
 END;
 
-DROP TRIGGER Employee_ID_AutoIncrement
+drop TRIGGER trg_InsertEmployee

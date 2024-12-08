@@ -1,4 +1,11 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { EmployeeService } from '../Services/employee.service';
 import { Employee } from 'src/Etities/Employee/Employee.entity';
 import { employee_worktype } from 'src/Etities/Employee/WorkType.entity';
@@ -34,5 +41,15 @@ export class EmployeeController {
   }
   @Get('/salary1hour') async findAllSalary1Hour(): Promise<salary1hour[]> {
     return this.employeeService.findAllSalary1Hour();
+  }
+
+  @Post() async createEmployee(
+    @Body() employeeData: Partial<Employee>,
+  ): Promise<Employee> {
+    try {
+      return await this.employeeService.createEmployee(employeeData);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 }

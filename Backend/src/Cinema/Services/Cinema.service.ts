@@ -80,4 +80,50 @@ export class CinemaService {
   async getEmployeeSalaries(): Promise<EmployeeSalary[]> {
     return this.employeeSalaryRepository.find();
   }
+  /////////DELETE//////////
+  async deleteEmployee(cinemaId: string, empId: string): Promise<void> {
+    const employeeWorkHours = await this.workHourRepository.findOne({
+      where: { cinema_id: cinemaId, emp_id: empId },
+    });
+    if (employeeWorkHours) {
+      await this.workHourRepository.delete({ emp_id: empId });
+      await this.currentPositionRepository.delete({ emp_id: empId });
+      await this.employeeRepository.delete(empId);
+    } else {
+      throw new Error('Employee not found in the specified cinema');
+    }
+  }
+
+  /////Create///
+  async addEmployeeToCinema(
+    cinemaId: string,
+    employeeData: {
+      employee: Partial<Employee>;
+      positionId: number;
+      workTypeId: number;
+    },
+  ): Promise<void> {
+    // Tạo nhân viên mới
+    const newEmployee = this.employeeRepository.create(employeeData.employee);
+    const savedEmployee = await this.employeeRepository.save(newEmployee); // Thêm bản ghi vào bảng employee_workhour với workhour = 0
+    // const newWorkHour = this.workHourRepository.create({
+    //   emp_id: savedEmployee.emp_id,
+    //   cinema_id: cinemaId,
+    //   workhour: 0,
+    // });
+    // await this.workHourRepository.save(newWorkHour); // Thêm bản ghi vào bảng employee_currentposition với positionId và workTypeId
+    // const newPosition = this.currentPositionRepository.create({
+    //   emp_id: savedEmployee.emp_id,
+    //   position_id: employeeData.positionId,
+    //   workType_id: employeeData.workTypeId,
+    // });
+    // await this.currentPositionRepository.save(newPosition);
+    const Cinema = this.cinemaRepository.findOne({
+      where: { cinema_id: cinemaId },
+    });
+    const newWorkHour = this.workHourRepository.create({
+      workhour: 1,
+    });
+    await this.workHourRepository.save(newWorkHour);
+  }
 }

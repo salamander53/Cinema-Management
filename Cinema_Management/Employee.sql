@@ -126,4 +126,6 @@ VALUES
   ('EMP0005', 1, 1),
   ('EMP0006', 3, 2),
   ('EMP0007', 2, 1)
-  
+
+DELETE FROM Employee 
+WHERE emp_id = 'EMP0009'

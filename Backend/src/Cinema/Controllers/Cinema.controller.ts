@@ -1,9 +1,12 @@
 import {
+  Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
   Param,
+  Post,
 } from '@nestjs/common';
 import { CinemaService } from '../Services/Cinema.service';
 import { Cinema } from 'src/Etities/Cinema/Cinema.entity';
@@ -59,9 +62,37 @@ export class CinemaController {
     }
     return employees;
   }
-  @Get(':id/employees/salary') async getEmployeeSalaries(): Promise<
+  @Get(':id/employee/salary') async getEmployeeSalaries(): Promise<
     EmployeeSalary[]
   > {
     return this.cinemaService.getEmployeeSalaries();
+  }
+  //////////DELETE////////
+  @Delete(':idCin/employee/:idEmp') async deleteEmployee(
+    @Param('idCin') idCin: string,
+    @Param('idEmp') idEmp: string,
+  ): Promise<void> {
+    try {
+      await this.cinemaService.deleteEmployee(idCin, idEmp);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  ////CREATE///
+  @Post(':id/employees') async addEmployeeToCinema(
+    @Param('id') cinemaId: string,
+    @Body()
+    employeeData: {
+      employee: Omit<Partial<Employee>, 'emp_id'>;
+      positionId: number;
+      workTypeId: number;
+    },
+  ): Promise<void> {
+    try {
+      await this.cinemaService.addEmployeeToCinema(cinemaId, employeeData);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 }

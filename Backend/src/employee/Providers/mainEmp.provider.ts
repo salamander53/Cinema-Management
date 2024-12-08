@@ -5,6 +5,8 @@ import { employee_position } from 'src/Etities/Employee/Position.entity';
 import { salary1hour } from 'src/Etities/Employee/Salary1hour.entity';
 import { employee_workhour } from 'src/Etities/Employee/WorkHour.entity';
 import { employee_worktype } from 'src/Etities/Employee/WorkType.entity';
+import { EmployeeSalary } from 'src/Etities/View/EmployeeSalary.entity';
+import { ViewEmployee } from 'src/Etities/View/ViewEmployee.entity';
 
 import { DataSource } from 'typeorm';
 
@@ -42,6 +44,18 @@ export const mainEmpProviders: Provider[] = [
     provide: 'EMPLOYEE_SALARY1HOUR_REPOSITORY',
     useFactory: (dataSource: DataSource) =>
       dataSource.getRepository(salary1hour),
+    inject: ['DATA_SOURCE'],
+  },
+  {
+    provide: 'VIEW_EMPLOYEE_REPOSITORY',
+    useFactory: (dataSource: DataSource) =>
+      dataSource.getRepository(ViewEmployee),
+    inject: ['DATA_SOURCE'],
+  },
+  {
+    provide: 'EMPLOYEE_SALARY_REPOSITORY',
+    useFactory: (dataSource: DataSource) =>
+      dataSource.getRepository(EmployeeSalary),
     inject: ['DATA_SOURCE'],
   },
 ];

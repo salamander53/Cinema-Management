@@ -28,21 +28,21 @@ export class EmployeeService {
   async findAllEmployee(): Promise<Employee[]> {
     return this.employeeRepository.find(); // Lấy tất cả nhân viên
   }
-  async findAllPositions(): Promise<employee_position[]> {
-    return this.positionRepository.find();
-  }
-  async findAllWorkTypes(): Promise<employee_worktype[]> {
-    return this.workTypeRepository.find();
-  }
-  async findAllEmployeeCurrentPosition(): Promise<employee_currentposition[]> {
-    return this.employeeCurrentPositonRepository.find();
-  }
-  async findAllEmployeeWorkHour(): Promise<employee_workhour[]> {
-    return this.employeeWorkHourRepository.find();
-  }
-  async findAllSalary1Hour(): Promise<salary1hour[]> {
-    return this.employeeSalary1HourRepository.find();
-  }
+  // async findAllPositions(): Promise<employee_position[]> {
+  //   return this.positionRepository.find();
+  // }
+  // async findAllWorkTypes(): Promise<employee_worktype[]> {
+  //   return this.workTypeRepository.find();
+  // }
+  // async findAllEmployeeCurrentPosition(): Promise<employee_currentposition[]> {
+  //   return this.employeeCurrentPositonRepository.find();
+  // }
+  // async findAllEmployeeWorkHour(): Promise<employee_workhour[]> {
+  //   return this.employeeWorkHourRepository.find();
+  // }
+  // async findAllSalary1Hour(): Promise<salary1hour[]> {
+  //   return this.employeeSalary1HourRepository.find();
+  // }
 
   async createEmployee(employeeData: Partial<Employee>): Promise<Employee> {
     const newEmployee = this.employeeRepository.create(employeeData);

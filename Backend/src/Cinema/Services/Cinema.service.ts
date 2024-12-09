@@ -5,7 +5,7 @@ import { Employee } from 'src/Etities/Employee/Employee.entity';
 import { employee_workhour } from 'src/Etities/Employee/WorkHour.entity';
 import { EmployeeSalary } from 'src/Etities/View/EmployeeSalary.entity';
 import { ViewEmployee } from 'src/Etities/View/ViewEmployee.entity';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CinemaService {
@@ -94,5 +94,27 @@ export class CinemaService {
   async createCinema(cinemaData: Partial<Cinema>): Promise<Cinema> {
     const newCinema = this.cinemaRepository.create(cinemaData);
     return await this.cinemaRepository.save(newCinema);
+  }
+
+  /////ADD EMPLOYEE TO CINEMA///
+  async addEmployeeToCinema(workHourData: {
+    cinema_id: string;
+    emp_id: string;
+  }): Promise<any> {
+    try {
+      await this.workHourRepository.insert({
+        emp_id: workHourData.emp_id,
+        cinema_id: workHourData.cinema_id,
+      });
+      // const newWorkHour = await this.workHourRepository.findOne({
+      //   where: {
+      //     emp_id: workHourData.emp_id,
+      //     cinema_id: workHourData.cinema_id,
+      //   },
+      // });
+      // return newWorkHour!;
+    } catch (error) {
+      throw new Error(workHourData.cinema_id);
+    }
   }
 }

@@ -73,3 +73,18 @@ BEGIN
         cinema_name, cinema_address
     FROM NumberedRows;
 END;
+GO
+CREATE TRIGGER trg_InsertWorkHour
+ON employee_workhour
+INSTEAD OF INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO employee_workhour
+        (cinema_id, emp_id, workhour)
+    SELECT i.cinema_id, i.emp_id, 1
+    FROM inserted i;
+END;
+DROP TRIGGER trg_InsertWorkHour
+GO

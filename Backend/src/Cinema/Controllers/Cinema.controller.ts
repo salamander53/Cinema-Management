@@ -14,6 +14,7 @@ import { Employee } from 'src/Etities/Employee/Employee.entity';
 import { employee_currentposition } from 'src/Etities/Employee/CurrentPosition.entity';
 import { ViewEmployee } from 'src/Etities/View/ViewEmployee.entity';
 import { EmployeeSalary } from 'src/Etities/View/EmployeeSalary.entity';
+import { employee_workhour } from 'src/Etities/Employee/WorkHour.entity';
 
 @Controller('cinema')
 export class CinemaController {
@@ -85,6 +86,18 @@ export class CinemaController {
     try {
       const cinema = await this.cinemaService.createCinema(cinemaData);
       return { message: 'Thêm rạp phim thành công!', cinema };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+  /////ADD EMPLOYEE TO CINEMA///
+  @Post('employee') async addEmployeeToCinema(
+    @Body() workHourData: { cinema_id: string; emp_id: string },
+  ): Promise<any> {
+    try {
+      const workHour =
+        await this.cinemaService.addEmployeeToCinema(workHourData);
+      return { message: 'Thêm thành công!', workHour };
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }

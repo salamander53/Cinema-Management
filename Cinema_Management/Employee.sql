@@ -35,6 +35,7 @@ CREATE TABLE Employee_WorkHour
   emp_id VARCHAR(10) NOT NULL,
   cinema_id VARCHAR(100) NOT NULL,
   workhour INT NOT NULL,
+  PRIMARY KEY (emp_id, cinema_id),
   FOREIGN KEY (emp_id) REFERENCES Employee(emp_id),
   FOREIGN KEY (cinema_id) REFERENCES Cinema(cinema_id)
 );

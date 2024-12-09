@@ -25,25 +25,25 @@ export class EmployeeController {
     return this.employeeService.findAllEmployee(); // Lấy danh sách tất cả nhân viên
   }
 
-  @Get('/worktypes') async findAllWorkTypes(): Promise<employee_worktype[]> {
-    return this.employeeService.findAllWorkTypes();
-  }
-  @Get('/positions') async findAllPositions(): Promise<employee_position[]> {
-    return this.employeeService.findAllPositions();
-  }
-  @Get('/currentposition') async findAllEmployeeCurrentPosition(): Promise<
-    employee_currentposition[]
-  > {
-    return this.employeeService.findAllEmployeeCurrentPosition();
-  }
-  @Get('/workhour') async findAllEmployeeWorkHour(): Promise<
-    employee_workhour[]
-  > {
-    return this.employeeService.findAllEmployeeWorkHour();
-  }
-  @Get('/salary1hour') async findAllSalary1Hour(): Promise<salary1hour[]> {
-    return this.employeeService.findAllSalary1Hour();
-  }
+  // @Get('/worktypes') async findAllWorkTypes(): Promise<employee_worktype[]> {
+  //   return this.employeeService.findAllWorkTypes();
+  // }
+  // @Get('/positions') async findAllPositions(): Promise<employee_position[]> {
+  //   return this.employeeService.findAllPositions();
+  // }
+  // @Get('/currentposition') async findAllEmployeeCurrentPosition(): Promise<
+  //   employee_currentposition[]
+  // > {
+  //   return this.employeeService.findAllEmployeeCurrentPosition();
+  // }
+  // @Get('/workhour') async findAllEmployeeWorkHour(): Promise<
+  //   employee_workhour[]
+  // > {
+  //   return this.employeeService.findAllEmployeeWorkHour();
+  // }
+  // @Get('/salary1hour') async findAllSalary1Hour(): Promise<salary1hour[]> {
+  //   return this.employeeService.findAllSalary1Hour();
+  // }
 
   @Post() async createEmployee(
     @Body() employeeData: Partial<Employee>,

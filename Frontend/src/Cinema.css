@@ -1,0 +1,182 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+  }
+  
+  h2 {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: flex-start;
+    padding: 10px;
+  }
+  
+  .home-button {
+    text-decoration: none;
+  }
+  
+  .logo {
+    width: 50px;
+    height: 50px;
+  }
+  
+  /* Search Input */
+  .search-input {
+    width: 80%;
+    padding: 8px;
+    margin: 10px 0;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Sorting Button */
+  .sort-button {
+    padding: 10px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: block;
+    margin: 10px auto;
+  }
+  
+  .sort-button.ascending {
+    background: linear-gradient(to right, #00bfff, #00008b);
+  }
+  
+  .sort-button.descending {
+    background: linear-gradient(to right, #00008b, #00bfff);
+  }
+  
+  /* Movie Theater List */
+  .theater-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .theater-item {
+    background-color: #f4f4f4;
+    margin: 10px 0;
+    padding: 2px;
+    cursor: pointer;
+  }
+  
+  .theater-item.selected {
+    background-color: #e0ffff;
+  }
+  
+  .theater-header {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .theater-name {
+    font-weight: bold;
+  }
+  
+  .theater-location {
+    font-style: italic;
+  }
+  
+  .add-employee-button {
+    background-color: #008cba;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    
+    
+  }
+  
+  /* Employee List */
+  .employee-list {
+    margin-top: 10px;
+  }
+  
+  .employee-item {
+    background-color: #f1f1f1;
+    padding: 10px;
+    margin: 5px 0;
+  }
+  
+  .employee-info {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+  
+  .employee-actions {
+    margin-top: 10px;
+  }
+  
+  .edit-button,
+  .delete-button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+  
+  .delete-button {
+    background-color: #f44336;
+  }
+  
+  /* Modal Styles */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+  }
+  
+  .close-button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .submit-button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    cursor: pointer;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 5px;
+  }
+  

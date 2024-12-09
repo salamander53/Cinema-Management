@@ -47,10 +47,10 @@ CREATE TABLE Employee_CurrentPosition
   emp_id VARCHAR(10) NOT NULL,
   position_id INT NOT NULL,
   workType_id INT NOT NULL,
-  PRIMARY KEY (emp_id, position_id, workType_id),
   FOREIGN KEY (emp_id) REFERENCES Employee(emp_id),
   FOREIGN KEY (workType_id) REFERENCES Employee_WorkType(workType_id),
-  FOREIGN KEY (position_id) REFERENCES Employee_Position(position_id)
+  FOREIGN KEY (position_id) REFERENCES Employee_Position(position_id),
+  PRIMARY KEY (emp_id, position_id, workType_id)
 )
 
 CREATE TABLE Sequence

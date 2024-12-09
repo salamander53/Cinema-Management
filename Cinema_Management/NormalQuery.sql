@@ -57,7 +57,7 @@ WHERE emp_id = 'EMP0019'
 DROP TABLE Employee_CurrentPosition
 GO
 -- Insert rows into table 'TableName'
-INSERT INTO Employee_CurrentPosition
+INSERT INTO [Employee_CurrentPosition]
     ( -- columns to insert data into
     [emp_id], [position_id], [workType_id]
     )
@@ -72,3 +72,8 @@ SELECT *
 FROM Employee_Position
 SELECT *
 FROM Employee_WorkType
+
+DROP TABLE Employee_Position
+DROP TABLE Employee_WorkType
+
+DROP TABLE Salary1hour

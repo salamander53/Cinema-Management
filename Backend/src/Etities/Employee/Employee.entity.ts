@@ -1,14 +1,6 @@
-import {
-  Entity,
-  Column,
-  PrimaryColumn,
-  OneToMany,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
 import { employee_currentposition } from './CurrentPosition.entity';
 import { employee_workhour } from './WorkHour.entity';
-import { Cinema } from '../Cinema/Cinema.entity';
 
 @Entity()
 export class Employee {
@@ -30,7 +22,7 @@ export class Employee {
   @Column({ unique: true })
   emp_phone: string;
 
-  @Column() // Thêm cột cinema_id
+  @Column({ nullable: true }) // Cinema ID có thể null
   cinema_id: string;
 
   @OneToMany(

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -83,6 +84,17 @@ export class CurrentPositionController {
           positionData,
         );
       return { message: 'Thêm công việc thành công!', position };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Delete() async deleteCurrentPosition(
+    @Body('emp_id') emp_id: string,
+  ): Promise<{ message: string }> {
+    try {
+      await this.employeeCurrentPositionService.deleteCurrentPosition(emp_id);
+      return { message: 'Xóa công việc thành công!' };
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }

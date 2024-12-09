@@ -74,4 +74,12 @@ export class CurrentPositionService {
       throw new Error('Failed to add current position');
     }
   }
+
+  async deleteCurrentPosition(emp_id: string): Promise<void> {
+    try {
+      await this.employeeCurrentPositonRepository.delete({ emp_id: emp_id });
+    } catch (error) {
+      throw new Error('Failed to delete current positions for employee');
+    }
+  }
 }

@@ -15,3 +15,8 @@ from EmployeeSalary
 
 SELECT *
 from viewEmployee
+
+DELETE FROM Employee
+
+DROP TABLE Employee
+

@@ -48,4 +48,13 @@ export class EmployeeService {
     const newEmployee = this.employeeRepository.create(employeeData);
     return await this.employeeRepository.save(newEmployee);
   }
+  async deleteEmployee(empId: string): Promise<void> {
+    const employeeToDelete = await this.employeeRepository.findOne({
+      where: { emp_id: empId },
+    });
+    if (!employeeToDelete) {
+      throw new Error(`Employee with ID ${empId} not found`);
+    }
+    await this.employeeRepository.delete(empId);
+  }
 }

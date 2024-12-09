@@ -49,7 +49,7 @@ export class CinemaController {
   //   }
   //   return currentPositions;
   // }
-  @Get(':id/employees') async getPositionOfEmployeeOfCinema(
+  @Get(':id/employee') async getPositionOfEmployeeOfCinema(
     @Param('id') id: string,
   ): Promise<ViewEmployee[]> {
     const employees =
@@ -68,29 +68,14 @@ export class CinemaController {
     return this.cinemaService.getEmployeeSalaries();
   }
   //////////DELETE////////
-  @Delete(':idCin/employee/:idEmp') async deleteEmployee(
-    @Param('idCin') idCin: string,
-    @Param('idEmp') idEmp: string,
-  ): Promise<void> {
-    try {
-      await this.cinemaService.deleteEmployee(idCin, idEmp);
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-    }
-  }
 
   ////CREATE///
-  @Post(':id/employees') async addEmployeeToCinema(
-    @Param('id') cinemaId: string,
-    @Body()
-    employeeData: {
-      employee: Omit<Partial<Employee>, 'emp_id'>;
-      positionId: number;
-      workTypeId: number;
-    },
-  ): Promise<void> {
+  @Post() async createCinema(
+    @Body() cinemaData: Partial<Cinema>,
+  ): Promise<{ message: string; cinema: Cinema }> {
     try {
-      await this.cinemaService.addEmployeeToCinema(cinemaId, employeeData);
+      const cinema = await this.cinemaService.createCinema(cinemaData);
+      return { message: 'Thêm thành công!', cinema };
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }

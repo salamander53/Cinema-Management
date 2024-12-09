@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
+  Param,
   Post,
 } from '@nestjs/common';
 import { EmployeeService } from '../Services/employee.service';
@@ -45,9 +47,21 @@ export class EmployeeController {
 
   @Post() async createEmployee(
     @Body() employeeData: Partial<Employee>,
-  ): Promise<Employee> {
+  ): Promise<{ message: string; employee: Employee }> {
     try {
-      return await this.employeeService.createEmployee(employeeData);
+      const employee = await this.employeeService.createEmployee(employeeData);
+      return { message: 'Thêm thành công!', employee };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Delete(':emp_id') async deleteEmployee(
+    @Param('emp_id') empId: string,
+  ): Promise<{ message: string }> {
+    try {
+      await this.employeeService.deleteEmployee(empId);
+      return { message: 'Employee deleted successfully' };
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }

@@ -20,3 +20,7 @@ DELETE FROM Employee
 
 DROP TABLE Employee
 
+UPDATE [Sequence]
+SET 
+seq_value = 3
+WHERE seq_name = 'Cinema'

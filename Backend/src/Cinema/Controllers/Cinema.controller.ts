@@ -68,14 +68,23 @@ export class CinemaController {
     return this.cinemaService.getEmployeeSalaries();
   }
   //////////DELETE////////
-
+  @Delete(':cinema_id') async deleteCinema(
+    @Param('cinema_id') cinemaId: string,
+  ): Promise<{ message: string }> {
+    try {
+      await this.cinemaService.deleteCinema(cinemaId);
+      return { message: 'Xóa rạp phim thành công!' };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
   ////CREATE///
   @Post() async createCinema(
     @Body() cinemaData: Partial<Cinema>,
   ): Promise<{ message: string; cinema: Cinema }> {
     try {
       const cinema = await this.cinemaService.createCinema(cinemaData);
-      return { message: 'Thêm thành công!', cinema };
+      return { message: 'Thêm rạp phim thành công!', cinema };
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }

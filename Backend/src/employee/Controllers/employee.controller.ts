@@ -50,7 +50,7 @@ export class EmployeeController {
   ): Promise<{ message: string; employee: Employee }> {
     try {
       const employee = await this.employeeService.createEmployee(employeeData);
-      return { message: 'Thêm thành công!', employee };
+      return { message: 'Thêm nhân viên thành công!', employee };
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
@@ -61,7 +61,7 @@ export class EmployeeController {
   ): Promise<{ message: string }> {
     try {
       await this.employeeService.deleteEmployee(empId);
-      return { message: 'Employee deleted successfully' };
+      return { message: 'Xóa nhân viên thành công' };
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }

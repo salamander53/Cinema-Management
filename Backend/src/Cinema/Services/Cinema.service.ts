@@ -81,7 +81,15 @@ export class CinemaService {
     return this.employeeSalaryRepository.find();
   }
   /////////DELETE//////////
-
+  async deleteCinema(cinemaId: string): Promise<void> {
+    const cinemaToDelete = await this.cinemaRepository.findOne({
+      where: { cinema_id: cinemaId },
+    });
+    if (!cinemaToDelete) {
+      throw new Error(`Cinema with ID ${cinemaId} not found`);
+    }
+    await this.cinemaRepository.delete(cinemaId);
+  }
   /////Create///
   async createCinema(cinemaData: Partial<Cinema>): Promise<Cinema> {
     const newCinema = this.cinemaRepository.create(cinemaData);

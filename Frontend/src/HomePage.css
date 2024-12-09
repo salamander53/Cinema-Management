@@ -135,3 +135,8 @@ body {
     width: 90%;
   }
 }
+/* Đảm bảo Flashcard hoạt động tốt khi dùng Link */
+.flashcard {
+  text-decoration: none; /* Bỏ gạch chân Link */
+  color: white; /* Màu chữ */
+}

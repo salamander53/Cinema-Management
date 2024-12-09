@@ -1,5 +1,6 @@
 import React from "react";
 import "./HomePage.css";
+import { Link } from "react-router-dom"; // Import Link từ React Router
 
 const HomePage = () => {
   return (
@@ -25,18 +26,21 @@ const HomePage = () => {
       {/* Nội dung chính */}
       <h1 className="homepage-title">Quản Lý Rạp Phim</h1>
       <div className="flashcards">
-        <div className="flashcard">
+        {/* Flashcard Quản Lý Nhân Viên */}
+        <Link to="/employee" className="flashcard">
           <div className="icon">
             <i className="fas fa-users"></i>
           </div>
           <p>Quản Lý Nhân Viên</p>
-        </div>
-        <div className="flashcard">
+        </Link>
+
+        {/* Flashcard Quản Lý Rạp Phim */}
+        <Link to="/cinema" className="flashcard"> {/* Cập nhật link */}
           <div className="icon">
             <i className="fas fa-film"></i>
           </div>
-          <p>Quản Lý Chi Nhánh</p>
-        </div>
+          <p>Quản Lý Rạp Phim</p>
+        </Link>
       </div>
     </div>
   );

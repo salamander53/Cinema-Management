@@ -77,3 +77,10 @@ DROP TABLE Employee_Position
 DROP TABLE Employee_WorkType
 
 DROP TABLE Salary1hour
+
+DELETE FROM employee_worktype
+
+SELECT *
+FROM salary1hour
+
+

@@ -1,0 +1,137 @@
+/* Tổng thể trang */
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #f0f8ff; /* Màu xanh nhạt */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Header */
+.header {
+  width: 100%;
+  background-color: #0056b3; /* Màu xanh đậm */
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.header-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+.header-logo i {
+  margin-right: 10px;
+  color: #ffcc00; /* Màu vàng nhạt cho icon */
+}
+
+.header-nav {
+  display: flex;
+  gap: 15px;
+}
+
+.header-nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Khoảng cách giữa icon và chữ */
+  transition: color 0.3s;
+}
+
+.header-nav a:hover {
+  color: #ffcc00; /* Màu vàng nhạt khi hover */
+}
+
+.header-nav i {
+  font-size: 1.2rem; /* Kích thước icon */
+}
+
+/* Container chính */
+.homepage-container {
+  text-align: center;
+  padding: 100px 20px; /* Đẩy nội dung xuống dưới header */
+}
+
+/* Tiêu đề */
+.homepage-title {
+  font-size: 2.5rem;
+  color: #0056b3; /* Xanh dương đậm */
+  margin-bottom: 30px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Flashcard Container */
+.flashcards {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Flashcard */
+.flashcard {
+  width: 250px;
+  height: 150px;
+  background: #007bff; /* Xanh dương chính */
+  color: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.flashcard:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Icon trong Flashcard */
+.icon {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.icon i {
+  color: #fff; /* Màu icon */
+}
+
+/* Chữ trong Flashcard */
+.flashcard p {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Responsive - Flashcards trên màn hình nhỏ */
+@media (max-width: 768px) {
+  .flashcards {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .flashcard {
+    width: 90%;
+  }
+}

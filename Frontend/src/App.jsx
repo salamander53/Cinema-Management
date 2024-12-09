@@ -15,11 +15,11 @@ function App() {
       <Routes>
 
         <Route path="/" element={<Login />} />     
-        <Route element={<ProtectedRoute />}>
+        
           <Route path="/HomePage" element={<Home />} />
           <Route path="/Cinema" element={<Cinema />} />
           <Route path="/employee" element={<Employee />} />
-        </Route>
+      
       </Routes>
     </Router>
   );

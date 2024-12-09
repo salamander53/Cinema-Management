@@ -38,6 +38,7 @@ const Login = () => {
       className="d-flex justify-content-center align-items-center"
       style={{
         height: "100vh",
+        width : "100%" , 
         backgroundColor: "#6399d6",
         backgroundSize: "cover",
         color: "#ffffff",

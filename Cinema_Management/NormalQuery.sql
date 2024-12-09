@@ -4,3 +4,23 @@ CREATE TABLE [user]
     username VARCHAR(15) NOT NULL UNIQUE,
     password VARCHAR(15) NOT NULL
 );
+
+SELECT *
+FROM employee_currentposition
+SELECT *
+FROM employee_workhour
+
+SELECT *
+from EmployeeSalary
+
+SELECT *
+from viewEmployee
+
+DELETE FROM Employee
+
+DROP TABLE Employee
+
+UPDATE [Sequence]
+SET 
+seq_value = 3
+WHERE seq_name = 'Cinema'

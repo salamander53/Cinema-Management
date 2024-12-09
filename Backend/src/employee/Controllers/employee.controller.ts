@@ -1,4 +1,13 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { EmployeeService } from '../Services/employee.service';
 import { Employee } from 'src/Etities/Employee/Employee.entity';
 import { employee_worktype } from 'src/Etities/Employee/WorkType.entity';
@@ -34,5 +43,27 @@ export class EmployeeController {
   }
   @Get('/salary1hour') async findAllSalary1Hour(): Promise<salary1hour[]> {
     return this.employeeService.findAllSalary1Hour();
+  }
+
+  @Post() async createEmployee(
+    @Body() employeeData: Partial<Employee>,
+  ): Promise<{ message: string; employee: Employee }> {
+    try {
+      const employee = await this.employeeService.createEmployee(employeeData);
+      return { message: 'Thêm nhân viên thành công!', employee };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Delete(':emp_id') async deleteEmployee(
+    @Param('emp_id') empId: string,
+  ): Promise<{ message: string }> {
+    try {
+      await this.employeeService.deleteEmployee(empId);
+      return { message: 'Xóa nhân viên thành công' };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 }

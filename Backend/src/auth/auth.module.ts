@@ -9,7 +9,7 @@ import { DatabaseModule } from 'src/database/database.module';
   imports: [
     JwtModule.register({
       secret: 'khoa123',
-      signOptions: { expiresIn: '10m' },
+      signOptions: { expiresIn: '3h' },
     }),
     DatabaseModule,
   ],

@@ -43,4 +43,18 @@ export class EmployeeService {
   async findAllSalary1Hour(): Promise<salary1hour[]> {
     return this.employeeSalary1HourRepository.find();
   }
+
+  async createEmployee(employeeData: Partial<Employee>): Promise<Employee> {
+    const newEmployee = this.employeeRepository.create(employeeData);
+    return await this.employeeRepository.save(newEmployee);
+  }
+  async deleteEmployee(empId: string): Promise<void> {
+    const employeeToDelete = await this.employeeRepository.findOne({
+      where: { emp_id: empId },
+    });
+    if (!employeeToDelete) {
+      throw new Error(`Employee with ID ${empId} not found`);
+    }
+    await this.employeeRepository.delete(empId);
+  }
 }

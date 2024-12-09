@@ -18,13 +18,14 @@ AS
         e.emp_phone,
         e.emp_address,
         p.position_name,
-        wt.workType_name
+        wt.workType_name,
+        wh.workhour
     FROM
         Employee e
         LEFT JOIN Employee_CurrentPosition cp ON e.emp_id = cp.emp_id
         LEFT JOIN Employee_Position p ON cp.position_id = p.position_id
+        LEFT JOIN Employee_WorkHour wh ON wh.emp_id = e.emp_id
         LEFT JOIN Employee_WorkType wt ON cp.workType_id = wt.workType_id;
-
 
 GO
 

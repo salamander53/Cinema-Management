@@ -16,7 +16,7 @@ import { AuthModule } from './auth/auth.module';
     // WorkHourModule,
 
     CinemaModule,
-    AuthModule,
+    // AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

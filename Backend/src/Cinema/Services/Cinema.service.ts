@@ -55,27 +55,8 @@ export class CinemaService {
   async getViewEmployees(): Promise<ViewEmployee[]> {
     return this.viewEmployeeRepository.find();
   }
-  async getPositionOfEmployeeOfCinema(
-    cinema_id: string,
-  ): Promise<ViewEmployee[]> {
-    return this.viewEmployeeRepository
-      .createQueryBuilder('viewEmployee')
-      .innerJoin(
-        'employee_workhour',
-        'workhour',
-        'viewEmployee.emp_id = workhour.emp_id',
-      )
-      .where('workhour.cinema_id = :cinema_id', { cinema_id })
-      .select([
-        'viewEmployee.emp_id',
-        'viewEmployee.emp_name',
-        'viewEmployee.emp_phone',
-        'viewEmployee.emp_address',
-        'viewEmployee.position_name',
-        'viewEmployee.workType_name',
-        'viewEmployee.workhour',
-      ])
-      .getMany();
+  async getPositionOfEmployeeOfCinema(cinema_id: string): Promise<Employee[]> {
+    return this.employeeRepository.find({ where: { cinema_id: cinema_id } });
   }
   async getEmployeeSalaries(): Promise<EmployeeSalary[]> {
     return this.employeeSalaryRepository.find();

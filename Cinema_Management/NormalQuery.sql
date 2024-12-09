@@ -53,3 +53,22 @@ FROM Employee
 UPDATE Employee
 SET cinema_id = 'CIN01'
 WHERE emp_id = 'EMP0019'
+
+DROP TABLE Employee_CurrentPosition
+GO
+-- Insert rows into table 'TableName'
+INSERT INTO Employee_CurrentPosition
+    ( -- columns to insert data into
+    [emp_id], [position_id], [workType_id]
+    )
+VALUES
+    ( -- first row: values for the columns in the list above
+        'EMP0020', 1, 2
+)
+-- add more rows here
+GO
+
+SELECT *
+FROM Employee_Position
+SELECT *
+FROM Employee_WorkType

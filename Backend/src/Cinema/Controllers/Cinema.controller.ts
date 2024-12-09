@@ -53,7 +53,7 @@ export class CinemaController {
   // }
   @Get(':id/employee') async getPositionOfEmployeeOfCinema(
     @Param('id') id: string,
-  ): Promise<ViewEmployee[]> {
+  ): Promise<Employee[]> {
     const employees =
       await this.cinemaService.getPositionOfEmployeeOfCinema(id);
     if (!employees.length) {

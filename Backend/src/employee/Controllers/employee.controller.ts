@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { EmployeeService } from '../Services/employee.service';
@@ -62,6 +63,41 @@ export class EmployeeController {
     try {
       await this.employeeService.deleteEmployee(empId);
       return { message: 'Xóa nhân viên thành công' };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  // @Post('/cinema') async updateCinemaForEmployee(
+  //   // @Param('id') empId: string,
+  //   @Body() employeeData: { cinema_id: string; emp_id: string },
+  // ): Promise<{ message: string; employee: Employee }> {
+  //   try {
+  //     const employee =
+  //       await this.employeeService.updateCinemaForEmployee(employeeData);
+  //     return { message: 'Cập nhật thành công!', employee };
+  //   } catch (error) {
+  //     throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+  //   }
+  // }
+
+  @Patch(':emp_id')
+  async updateEmployeeToCinema(
+    @Body('cinema_id') cinemaId: string,
+    @Param('emp_id') empId: string,
+  ): Promise<{ message: string }> {
+    try {
+      const result = await this.employeeService.updateEmployeeToCinema(
+        cinemaId,
+        empId,
+      );
+      if (!result.affected) {
+        throw new HttpException(
+          `Employee with emp_id ${empId} not found`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      return { message: 'Cập nhật thành công!' };
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }

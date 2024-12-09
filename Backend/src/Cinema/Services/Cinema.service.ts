@@ -97,24 +97,4 @@ export class CinemaService {
   }
 
   /////ADD EMPLOYEE TO CINEMA///
-  async addEmployeeToCinema(workHourData: {
-    cinema_id: string;
-    emp_id: string;
-  }): Promise<any> {
-    try {
-      await this.workHourRepository.insert({
-        emp_id: workHourData.emp_id,
-        cinema_id: workHourData.cinema_id,
-      });
-      // const newWorkHour = await this.workHourRepository.findOne({
-      //   where: {
-      //     emp_id: workHourData.emp_id,
-      //     cinema_id: workHourData.cinema_id,
-      //   },
-      // });
-      // return newWorkHour!;
-    } catch (error) {
-      throw new Error(workHourData.cinema_id);
-    }
-  }
 }

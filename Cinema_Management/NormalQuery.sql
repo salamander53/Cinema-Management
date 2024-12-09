@@ -29,7 +29,7 @@ SELECT *
 FROM employee_workhour
 
 DROP TABLE Employee_WorkHour
-
+DROP TABLE Employee_CurrentPosition
 -- Insert rows into table 'TableName'
 INSERT INTO Employee_WorkHour
     ( -- columns to insert data into
@@ -37,7 +37,7 @@ INSERT INTO Employee_WorkHour
     )
 VALUES
     ( -- first row: values for the columns in the list above
-        'EMP0018', 'CIN00'
+        'EMP0018', 'CIN01'
 )
 
 -- add more rows here
@@ -47,3 +47,9 @@ FROM Employee_WorkHour
 
 SELECT *
 FROM [user]
+SELECT *
+FROM Employee
+
+UPDATE Employee
+SET cinema_id = 'CIN01'
+WHERE emp_id = 'EMP0019'

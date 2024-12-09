@@ -7,6 +7,8 @@ CREATE TABLE Employee
   emp_cccd INT UNIQUE NOT NULL,
   emp_address VARCHAR(255) NOT NULL,
   emp_phone VARCHAR(15) NOT NULL,
+  cinema_id VARCHAR(100),
+  FOREIGN KEY (cinema_id) REFERENCES Cinema(cinema_id)
 );
 
 CREATE TABLE Employee_Position
@@ -34,7 +36,7 @@ CREATE TABLE Employee_WorkHour
 (
   emp_id VARCHAR(10) NOT NULL,
   cinema_id VARCHAR(100) NOT NULL,
-  workhour INT NOT NULL,
+  workhour INT ,
   PRIMARY KEY (emp_id, cinema_id),
   FOREIGN KEY (emp_id) REFERENCES Employee(emp_id),
   FOREIGN KEY (cinema_id) REFERENCES Cinema(cinema_id)

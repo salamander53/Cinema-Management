@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { CinemaService } from '../Services/Cinema.service';
@@ -52,7 +53,7 @@ export class CinemaController {
   // }
   @Get(':id/employee') async getPositionOfEmployeeOfCinema(
     @Param('id') id: string,
-  ): Promise<ViewEmployee[]> {
+  ): Promise<Employee[]> {
     const employees =
       await this.cinemaService.getPositionOfEmployeeOfCinema(id);
     if (!employees.length) {
@@ -91,15 +92,4 @@ export class CinemaController {
     }
   }
   /////ADD EMPLOYEE TO CINEMA///
-  @Post('employee') async addEmployeeToCinema(
-    @Body() workHourData: { cinema_id: string; emp_id: string },
-  ): Promise<any> {
-    try {
-      const workHour =
-        await this.cinemaService.addEmployeeToCinema(workHourData);
-      return { message: 'Thêm thành công!', workHour };
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
-  }
 }

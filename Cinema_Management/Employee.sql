@@ -7,6 +7,8 @@ CREATE TABLE Employee
   emp_cccd INT UNIQUE NOT NULL,
   emp_address VARCHAR(255) NOT NULL,
   emp_phone VARCHAR(15) NOT NULL,
+  cinema_id VARCHAR(100),
+  FOREIGN KEY (cinema_id) REFERENCES Cinema(cinema_id)
 );
 
 CREATE TABLE Employee_Position
@@ -27,14 +29,14 @@ CREATE TABLE Salary1hour
   position_id INT NOT NULL,
   FOREIGN KEY (workType_id) REFERENCES Employee_WorkType(workType_id),
   FOREIGN KEY (position_id) REFERENCES Employee_Position(position_id),
-  salary1hour INT NOT NULL
+  salary1hour DECIMAL(10, 2)
 );
 
 CREATE TABLE Employee_WorkHour
 (
   emp_id VARCHAR(10) NOT NULL,
   cinema_id VARCHAR(100) NOT NULL,
-  workhour INT NOT NULL,
+  workhour INT ,
   PRIMARY KEY (emp_id, cinema_id),
   FOREIGN KEY (emp_id) REFERENCES Employee(emp_id),
   FOREIGN KEY (cinema_id) REFERENCES Cinema(cinema_id)
@@ -47,7 +49,8 @@ CREATE TABLE Employee_CurrentPosition
   workType_id INT NOT NULL,
   FOREIGN KEY (emp_id) REFERENCES Employee(emp_id),
   FOREIGN KEY (workType_id) REFERENCES Employee_WorkType(workType_id),
-  FOREIGN KEY (position_id) REFERENCES Employee_Position(position_id)
+  FOREIGN KEY (position_id) REFERENCES Employee_Position(position_id),
+  PRIMARY KEY (emp_id, position_id, workType_id)
 )
 
 CREATE TABLE Sequence
@@ -76,20 +79,19 @@ VALUES
 --   ('Lê Thị G', '1991-03-08', 963852741, '444 Đường G, Quận 7', '0909988776'),
 --   ('Trần Văn H', '1986-07-25', 852741963, '555 Đường H, Quận 8', '0917788990');
 
--- -- Chèn dữ liệu vào bảng Employee_Position
--- INSERT INTO Employee_Position
---   ( position_name)
--- VALUES
---   ( 'Manager'),
---   ('Cashier'),
---   ('Cleaner');
-
--- -- Chèn dữ liệu vào bảng Employee_WorkType
--- INSERT INTO Employee_WorkType
---   ( workType_name)
--- VALUES
---   ( 'Full-time'),
---   ('Part-time');
+-- Chèn dữ liệu vào bảng Employee_WorkType
+INSERT INTO Employee_WorkType
+  ( workType_name)
+VALUES
+  ( 'Full-time'),
+  ('Part-time');
+-- Chèn dữ liệu vào bảng Employee_Position
+INSERT INTO Employee_Position
+  ( position_name)
+VALUES
+  ( 'Manager'),
+  ('Cashier'),
+  ('Cleaner');
 
 -- -- Chèn dữ liệu vào bảng Salary1hour
 -- INSERT INTO Salary1hour

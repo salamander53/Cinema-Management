@@ -55,27 +55,8 @@ export class CinemaService {
   async getViewEmployees(): Promise<ViewEmployee[]> {
     return this.viewEmployeeRepository.find();
   }
-  async getPositionOfEmployeeOfCinema(
-    cinema_id: string,
-  ): Promise<ViewEmployee[]> {
-    return this.viewEmployeeRepository
-      .createQueryBuilder('viewEmployee')
-      .innerJoin(
-        'employee_workhour',
-        'workhour',
-        'viewEmployee.emp_id = workhour.emp_id',
-      )
-      .where('workhour.cinema_id = :cinema_id', { cinema_id })
-      .select([
-        'viewEmployee.emp_id',
-        'viewEmployee.emp_name',
-        'viewEmployee.emp_phone',
-        'viewEmployee.emp_address',
-        'viewEmployee.position_name',
-        'viewEmployee.workType_name',
-        'viewEmployee.workhour',
-      ])
-      .getMany();
+  async getPositionOfEmployeeOfCinema(cinema_id: string): Promise<Employee[]> {
+    return this.employeeRepository.find({ where: { cinema_id: cinema_id } });
   }
   async getEmployeeSalaries(): Promise<EmployeeSalary[]> {
     return this.employeeSalaryRepository.find();
@@ -97,24 +78,4 @@ export class CinemaService {
   }
 
   /////ADD EMPLOYEE TO CINEMA///
-  async addEmployeeToCinema(workHourData: {
-    cinema_id: string;
-    emp_id: string;
-  }): Promise<any> {
-    try {
-      await this.workHourRepository.insert({
-        emp_id: workHourData.emp_id,
-        cinema_id: workHourData.cinema_id,
-      });
-      // const newWorkHour = await this.workHourRepository.findOne({
-      //   where: {
-      //     emp_id: workHourData.emp_id,
-      //     cinema_id: workHourData.cinema_id,
-      //   },
-      // });
-      // return newWorkHour!;
-    } catch (error) {
-      throw new Error(workHourData.cinema_id);
-    }
-  }
 }

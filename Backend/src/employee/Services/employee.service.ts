@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { Cinema } from 'src/Etities/Cinema/Cinema.entity';
 import { employee_currentposition } from 'src/Etities/Employee/CurrentPosition.entity';
 import { Employee } from 'src/Etities/Employee/Employee.entity';
 import { employee_position } from 'src/Etities/Employee/Position.entity';
@@ -13,16 +14,18 @@ export class EmployeeService {
   constructor(
     @Inject('EMPLOYEE_REPOSITORY')
     private readonly employeeRepository: Repository<Employee>,
-    @Inject('EMPLOYEE_POSITION_REPOSITORY')
-    private readonly positionRepository: Repository<employee_position>,
-    @Inject('EMPLOYEE_WORKTYPE_REPOSITORY')
-    private readonly workTypeRepository: Repository<employee_worktype>,
-    @Inject('EMPLOYEE_CURRENTPOSITON_REPOSITORY')
-    private readonly employeeCurrentPositonRepository: Repository<employee_currentposition>,
-    @Inject('EMPLOYEE_WORKHOUR_REPOSITORY')
-    private readonly employeeWorkHourRepository: Repository<employee_workhour>,
-    @Inject('EMPLOYEE_SALARY1HOUR_REPOSITORY')
-    private readonly employeeSalary1HourRepository: Repository<salary1hour>,
+    @Inject('CINEMA_REPOSITORY')
+    private readonly cinemaRepository: Repository<Employee>,
+    // @Inject('EMPLOYEE_POSITION_REPOSITORY')
+    // private readonly positionRepository: Repository<employee_position>,
+    // @Inject('EMPLOYEE_WORKTYPE_REPOSITORY')
+    // private readonly workTypeRepository: Repository<employee_worktype>,
+    // @Inject('EMPLOYEE_CURRENTPOSITON_REPOSITORY')
+    // private readonly employeeCurrentPositonRepository: Repository<employee_currentposition>,
+    // @Inject('EMPLOYEE_WORKHOUR_REPOSITORY')
+    // private readonly employeeWorkHourRepository: Repository<employee_workhour>,
+    // @Inject('EMPLOYEE_SALARY1HOUR_REPOSITORY')
+    // private readonly employeeSalary1HourRepository: Repository<salary1hour>,
   ) {}
 
   async findAllEmployee(): Promise<Employee[]> {
@@ -56,5 +59,17 @@ export class EmployeeService {
       throw new Error(`Employee with ID ${empId} not found`);
     }
     await this.employeeRepository.delete(empId);
+  }
+
+  async updateEmployeeToCinema(cinemaId: string, empId: string) {
+    const cinema = await this.cinemaRepository.findOne({
+      where: { cinema_id: cinemaId },
+    });
+    if (!cinema) throw new Error(`Cinema with ID ${cinemaId} not found`);
+    const result = await this.employeeRepository.update(
+      { emp_id: empId },
+      { cinema_id: cinemaId },
+    );
+    return result;
   }
 }

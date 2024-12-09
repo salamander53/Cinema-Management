@@ -22,6 +22,9 @@ export class Employee {
   @Column({ unique: true })
   emp_phone: string;
 
+  @Column({ nullable: true }) // Cinema ID có thể null
+  cinema_id: string;
+
   @OneToMany(
     () => employee_currentposition,
     (currentPosition) => currentPosition.employee,

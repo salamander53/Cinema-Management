@@ -87,4 +87,40 @@ BEGIN
     FROM inserted i;
 END;
 DROP TRIGGER trg_InsertWorkHour
+
 GO
+
+CREATE TRIGGER trg_InsertSalaryFromWorkType
+ON Employee_WorkType
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO Salary1hour
+        (workType_id, position_id, salary1hour)
+    SELECT i.workType_id, p.position_id, NULL
+    FROM inserted i
+  CROSS JOIN Employee_Position p
+    WHERE NOT EXISTS (
+    SELECT 1
+    FROM Salary1hour es
+    WHERE es.workType_id = i.workType_id AND es.position_id = p.position_id
+  );
+END;
+GO
+CREATE TRIGGER trg_InsertSalaryFromPosition
+ON Employee_Position
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO Salary1hour
+        (workType_id, position_id, salary1hour)
+    SELECT w.workType_id, i.position_id, NULL
+    FROM inserted i
+  CROSS JOIN Employee_WorkType w
+    WHERE NOT EXISTS (
+    SELECT 1
+    FROM Salary1hour es
+    WHERE es.workType_id = w.workType_id AND es.position_id = i.position_id
+  );
+END;
+DROP TRIGGER trg_InsertSalaryFromPosition

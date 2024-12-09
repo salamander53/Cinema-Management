@@ -12,7 +12,7 @@ import { AuthModule } from './auth/auth.module';
   imports: [
     DatabaseModule,
     EmployeeModule,
-    // CurrentPositionModule,
+    CurrentPositionModule,
     // WorkHourModule,
 
     CinemaModule,

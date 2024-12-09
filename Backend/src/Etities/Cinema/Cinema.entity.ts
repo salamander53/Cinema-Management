@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { employee_workhour } from '../Employee/WorkHour.entity';
+import { Employee } from '../Employee/Employee.entity';
 
 @Entity()
 export class Cinema {
@@ -13,5 +14,5 @@ export class Cinema {
   cinema_address: string;
 
   @OneToMany(() => employee_workhour, (workHour) => workHour.cinema)
-  workHour: employee_workhour;
+  workHour: employee_workhour[];
 }

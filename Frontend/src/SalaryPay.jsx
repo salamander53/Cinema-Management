@@ -1,220 +1,237 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { toast } from "react-toastify";
-import styled from "styled-components";
-import "bootstrap/dist/css/bootstrap.min.css";
-
-const Container = styled.div`
-  margin: 2rem auto;
-  max-width: 1200px;
-`;
-
-const StyledTable = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1rem 0;
-  border-radius: 0.5rem;
-  overflow: hidden;
-
-  th {
-    background-color: #007bff;
-    color: white;
-    padding: 1rem;
-    text-align: left;
-  }
-
-  td {
-    padding: 1rem;
-    border: 1px solid #ddd;
-  }
-
-  tbody tr:nth-child(odd) {
-    background-color: #f9f9f9;
-  }
-
-  tbody tr:hover {
-    background-color: #f1f1f1;
-  }
-`;
+import AxiosInstance from "./Components/AxiosInstance";
 
 const SalaryPay = () => {
-  const [employees, setEmployees] = useState([]);
-  const [positions, setPositions] = useState([]);
-  const [salaryData, setSalaryData] = useState([]);
-  const [workHoursAggregated, setWorkHoursAggregated] = useState([]); // Lưu trữ dữ liệu tổng số giờ làm việc của nhân viên
-  const [searchQuery, setSearchQuery] = useState(""); // Tìm kiếm theo tên hoặc ID nhân viên
+  const [workHours, setWorkHours] = useState([]); 
+  const [employeePositions, setEmployeePositions] = useState([]); 
+  const [salaryData, setSalaryData] = useState([]); 
+  const [mergedData, setMergedData] = useState([]); 
+  const [loading, setLoading] = useState(true); 
 
-  // Fetch dữ liệu từ API
+
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/employee")
-      .then((res) => {
-        console.log(res.data); // Log dữ liệu nhân viên
-        setEmployees(res.data);
-      })
-      .catch(() => toast.error("Không thể tải dữ liệu nhân viên!"));
-  
-    axios
-      .get("http://localhost:3000/currentpostion")
-      .then((res) => {
-        console.log(res.data); // Log dữ liệu chức vụ
-        setPositions(res.data);
-      })
-      .catch(() => toast.error("Không thể tải dữ liệu chức vụ!"));
-  
-    axios
-      .get("http://localhost:3000/salary1hour")
-      .then((res) => {
-        console.log(res.data); // Log dữ liệu lương
-        setSalaryData(res.data.salaries);
-      })
-      .catch(() => toast.error("Không thể tải dữ liệu lương!"));
-  
-    axios
-      .get("http://localhost:3000/workhour/aggregated")
-      .then((res) => {
-        console.log(res.data); // Log dữ liệu tổng số giờ làm việc
-        setWorkHoursAggregated(res.data);
-      })
-      .catch(() => toast.error("Không thể tải dữ liệu tổng số giờ làm việc!"));
+    const fetchData = async () => {
+      try {
+
+        const workHoursRes = await AxiosInstance.get("/workhour/aggregated");
+        const workHoursData = workHoursRes.data.data;
+        const positionsRes = await AxiosInstance.get("/currentpostion");
+        const positionsData = positionsRes.data;
+        const salaryRes = await AxiosInstance.get("/salary1hour");
+        const salaryData = salaryRes.data.salaries;
+        const merged = workHoursData.map((workItem) => {
+          const employee = positionsData.find((emp) => emp.emp_id === workItem.emp_id);
+          if (employee) {
+            const { position_name, workType_name } = employee.current_positions[0];
+
+            const salaryItem = salaryData.find(
+              (salary) =>
+                salary.position.position_name === position_name &&
+                salary.workType.workType_name === workType_name
+            );
+
+            const totalSalary = salaryItem ? salaryItem.salary1hour * workItem.total_workhour : 0;
+
+            return {
+              ...workItem,
+              position_name,
+              workType_name,
+              salary1hour: salaryItem ? salaryItem.salary1hour : 0,
+              totalSalary,
+            };
+          }
+          return workItem;
+        });
+
+        setWorkHours(workHoursData);
+        setEmployeePositions(positionsData);
+        setSalaryData(salaryData);
+        setMergedData(merged); // Set the merged data with calculated salary
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu:", error);
+        alert("Không thể tải dữ liệu. Vui lòng thử lại.");
+      } finally {
+        setLoading(false); // Set loading to false after fetching is done
+      }
+    };
+
+    fetchData();
   }, []);
-  
 
-  // Lấy thông tin chức vụ và loại công việc
-  const getPositionAndWorkType = (empId) => {
-    const positionData = positions.find((pos) => pos.emp_id === empId);
-    if (positionData && positionData.current_positions.length > 0) {
-      const currentPosition = positionData.current_positions[0];
-      return {
-        positionName: currentPosition.position_name,
-        workTypeName: currentPosition.workType_name,
-      };
-    }
-    return { positionName: "Không xác định", workTypeName: "Không xác định" };
-  };
-
-  // Tìm salary1hour cho nhân viên dựa trên chức vụ và loại công việc
-  const getSalary1Hour = (positionName, workTypeName) => {
-    const salary = salaryData.find(
-      (item) =>
-        item.position.position_name === positionName &&
-        item.workType.workType_name === workTypeName
-    );
-    return salary ? (salary.salary1hour === null ? -1 : salary.salary1hour) : -1;
-  };
-
-  // Tính tổng lương cho nhân viên
-  const calculateTotalSalary = (empId) => {
-    const { positionName, workTypeName } = getPositionAndWorkType(empId);
-    const salary1hour = getSalary1Hour(positionName, workTypeName);
-    const totalWorkHours = calculateTotalWorkHours(empId);
-    return salary1hour * totalWorkHours;
-  };
-
-  // Xử lý thanh toán lương
-  const handlePaySalary = async (empId) => {
+  const handlePayment = async (emp_id, cinema_id) => {
     try {
-      // Xóa tất cả giờ làm việc của nhân viên này từ workhour
-      const employeeWorkHours = workHoursAggregated.filter(
-        (work) => work.emp_id === empId
-      );
-
-      await Promise.all(
-        employeeWorkHours.map((work) =>
-          axios.delete(`http://localhost:3000/workhour/${work.log_id}`)
-        )
-      );
-
-      // Cập nhật lại danh sách giờ làm việc
-      setWorkHoursAggregated((prev) =>
-        prev.filter((work) => work.emp_id !== empId)
-      );
-
-      toast.success("Đã thanh toán lương cho nhân viên!");
+      const response = await AxiosInstance.delete(`/workhour`, {
+        data: {
+         "emp_id": emp_id,
+         "cinema_id": cinema_id
+        }
+      });
+      console.log("Xóa ca làm việc thành công", response.data);
+      setMergedData(prevData => prevData.filter(item => !(item.emp_id === emp_id && item.cinema_id === cinema_id)));
+  
+      alert("Thanh toán thành công và ca làm việc đã được xóa!");
     } catch (error) {
-      toast.error("Thanh toán thất bại!");
+      console.error("Lỗi khi thanh toán:", error);
+      alert("Có lỗi xảy ra khi thanh toán. Vui lòng thử lại.");
     }
   };
-
-  // Lọc dữ liệu nhân viên theo tên hoặc ID
-  const filteredEmployees = employees.filter(
-    (emp) =>
-      emp.emp_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      emp.emp_id.toString().includes(searchQuery)
-  );
 
   return (
-    <Container>
-      <h1 className="text-center mb-4">Quản Lý Thanh Toán Lương</h1>
+    <div style={{ padding: "20px" }}>
+      <h1 style={{ color: "#2c3e50", textAlign: "center" }}>Bảng Tính Lương</h1>
 
-      {/* Thanh tìm kiếm */}
-      <div style={{ marginBottom: "20px" }}>
-        <input
-          type="text"
-          placeholder="Tìm kiếm theo tên hoặc ID nhân viên..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          style={{
-            padding: "10px",
-            border: "1px solid #ccc",
-            borderRadius: "5px",
-            width: "300px",
-          }}
-        />
-      </div>
-
-      <StyledTable>
-        <thead>
-          <tr>
-            <th>Tên Nhân Viên</th>
-            <th>ID Nhân Viên</th>
-            <th>ID Rạp Phim</th>
-            <th>Số Điện Thoại</th>
-            <th>Chức Vụ</th>
-            <th>Loại Công Việc</th>
-            <th>Số Giờ Làm</th>
-            <th>Tổng Lương</th>
-            <th>Thanh Toán</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredEmployees
-            .filter(
-              (emp) =>
-                emp.cinema_id !== null &&
-                calculateTotalWorkHours(emp.emp_id) > 0
-            )
-            .map((emp) => {
-              const totalWorkHours = calculateTotalWorkHours(emp.emp_id);
-              const { positionName, workTypeName } = getPositionAndWorkType(
-                emp.emp_id
-              );
-              const totalSalary = calculateTotalSalary(emp.emp_id);
-
-              return (
-                <tr key={emp.emp_id}>
-                  <td>{emp.emp_name}</td>
-                  <td>{emp.emp_id}</td>
-                  <td>{emp.cinema_id || "Không xác định"}</td>
-                  <td>{emp.emp_phone}</td>
-                  <td>{positionName}</td>
-                  <td>{workTypeName}</td>
-                  <td>{totalWorkHours}</td>
-                  <td>{totalSalary}</td>
-                  <td>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => handlePaySalary(emp.emp_id)}
+      {loading ? (
+        <div style={{ textAlign: "center", fontSize: "18px" }}>Đang tải dữ liệu...</div>
+      ) : (
+        <>
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              backgroundColor: "#f9f9f9",
+              borderRadius: "10px",
+              overflow: "hidden",
+              boxShadow: "0 4px 8px",
+            }}
+          >
+            <thead>
+              <tr
+                style={{
+                  backgroundColor: "#007bff",
+                  color: "#fff",
+                  borderBottom: "1px solid #ddd",
+                }}
+              >
+                <th style={{ padding: "15px", border: "none", textAlign: "center" }}>
+                  Mã nhân viên
+                </th>
+                <th style={{ padding: "15px", border: "none", textAlign: "center" }}>
+                  Mã rạp
+                </th>
+                <th style={{ padding: "15px", border: "none", textAlign: "center" }}>
+                  Tổng số giờ làm
+                </th>
+                <th style={{ padding: "15px", border: "none", textAlign: "center" }}>
+                  Vị trí công việc
+                </th>
+                <th style={{ padding: "15px", border: "none", textAlign: "center" }}>
+                  Loại công việc
+                </th>
+                <th style={{ padding: "15px", border: "none", textAlign: "center" }}>
+                  Lương một giờ
+                </th>
+                <th style={{ padding: "15px", border: "none", textAlign: "center" }}>
+                  Lương
+                </th>
+                <th style={{ padding: "15px", border: "none", textAlign: "center" }}>
+                  Thao tác
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {mergedData.length > 0 ? (
+                mergedData.map((item, index) => (
+                  <tr key={index} style={{ borderBottom: "1px solid #ddd" }}>
+                    <td
+                      style={{
+                        padding: "10px",
+                        border: "none",
+                        textAlign: "center",
+                      }}
                     >
-                      Thanh Toán
-                    </button>
+                      {item.emp_id}
+                    </td>
+                    <td
+                      style={{
+                        padding: "10px",
+                        border: "none",
+                        textAlign: "center",
+                      }}
+                    >
+                      {item.cinema_id}
+                    </td>
+                    <td
+                      style={{
+                        padding: "10px",
+                        border: "none",
+                        textAlign: "center",
+                      }}
+                    >
+                      {item.total_workhour}
+                    </td>
+                    <td
+                      style={{
+                        padding: "10px",
+                        border: "none",
+                        textAlign: "center",
+                      }}
+                    >
+                      {item.position_name}
+                    </td>
+                    <td
+                      style={{
+                        padding: "10px",
+                        border: "none",
+                        textAlign: "center",
+                      }}
+                    >
+                      {item.workType_name}
+                    </td>
+                    <td
+                      style={{
+                        padding: "10px",
+                        border: "none",
+                        textAlign: "center",
+                      }}
+                    >
+                      {item.salary1hour ? item.salary1hour : "Chưa có dữ liệu"}
+                    </td>
+                    <td
+                      style={{
+                        padding: "10px",
+                        border: "none",
+                        textAlign: "center",
+                      }}
+                    >
+                      {item.totalSalary ? item.totalSalary : "Chưa có dữ liệu"}
+                    </td>
+                    <td
+                      style={{
+                        padding: "10px",
+                        border: "none",
+                        textAlign: "center",
+                      }}
+                    >
+                      <button
+                        onClick={() =>
+                          handlePayment(item.emp_id, item.cinema_id) // Pass the log_id for deletion
+                        }
+                        style={{
+                          backgroundColor: "#28a745",
+                          color: "white",
+                          border: "none",
+                          padding: "8px 16px",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Thanh toán
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="8" style={{ textAlign: "center", padding: "20px" }}>
+                    Không có dữ liệu.
                   </td>
                 </tr>
-              );
-            })}
-        </tbody>
-      </StyledTable>
-    </Container>
+              )}
+            </tbody>
+          </table>
+        </>
+      )}
+    </div>
   );
 };
 

@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
-import AxiosInstance from "./Components/AxiosInstance"; // Import AxiosInstance
+import AxiosInstance from "./Components/AxiosInstance"; 
 import { useNavigate } from "react-router-dom";
 import "./JobManage.css";
 import { toast } from "react-toastify";
 
 const JobManage = () => {
-  const [employees, setEmployees] = useState([]); 
+  const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState("");
-  const [positions, setPositions] = useState([]); 
-  const [selectedPosition, setSelectedPosition] = useState(""); 
-  const [selectedWorkType, setSelectedWorkType] = useState(""); 
-  const [showForm, setShowForm] = useState(false); 
-  const [currentEmployee, setCurrentEmployee] = useState(null); 
-  const navigate = useNavigate(); 
+  const [positions, setPositions] = useState([]);
+  const [selectedPosition, setSelectedPosition] = useState("");
+  const [selectedWorkType, setSelectedWorkType] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [currentEmployee, setCurrentEmployee] = useState(null);
+  const navigate = useNavigate();
+
   useEffect(() => {
-    AxiosInstance.get("http://localhost:3000/currentpostion")
+    AxiosInstance.get("/currentpostion")  
       .then((res) => {
         setEmployees(res.data);
       })
@@ -22,15 +23,17 @@ const JobManage = () => {
         console.error("Lỗi khi gọi API:", error);
         toast.error("Không thể tải dữ liệu nhân viên!");
       });
-    AxiosInstance.get("http://localhost:3000/salary1hour/positions")
+
+    AxiosInstance.get("/salary1hour/positions") 
       .then((res) => {
-        setPositions(res.data); 
+        setPositions(res.data);
       })
       .catch((error) => {
         console.error("Lỗi khi gọi API lấy chức vụ:", error);
         toast.error("Không thể tải dữ liệu chức vụ!");
       });
   }, []);
+
   const handleSearch = () => {
     return employees.filter(
       (emp) =>
@@ -40,6 +43,7 @@ const JobManage = () => {
   };
 
   const filteredEmployees = handleSearch();
+
   const handleDeletePosition = async (emp) => {
     if (!emp.current_positions.length) {
       toast.warning("Nhân viên này chưa có chức vụ để xóa!");
@@ -47,19 +51,17 @@ const JobManage = () => {
     }
 
     try {
-   
-      await AxiosInstance.delete("http://localhost:3000/currentpostion", {
+      await AxiosInstance.delete("/currentpostion", { 
         data: {
           emp_id: emp.emp_id,
         },
       });
       toast.success(`Xóa chức vụ thành công cho ${emp.emp_name}!`);
 
-      
       setEmployees((prev) =>
         prev.map((e) =>
           e.emp_id === emp.emp_id
-            ? { ...e, current_positions: [] } 
+            ? { ...e, current_positions: [] }
             : e
         )
       );
@@ -78,12 +80,10 @@ const JobManage = () => {
     setShowForm(true);
   };
 
-  // Xử lý thay đổi chức vụ
   const handlePositionChange = (e) => {
     setSelectedPosition(e.target.value);
   };
 
-  // Xử lý thay đổi loại công việc
   const handleWorkTypeChange = (e) => {
     setSelectedWorkType(e.target.value);
   };
@@ -95,7 +95,7 @@ const JobManage = () => {
     }
 
     try {
-      await AxiosInstance.post("http://localhost:3000/currentpostion", {
+      await AxiosInstance.post("/currentpostion", { // Sử dụng AxiosInstance để gửi yêu cầu POST
         emp_id: currentEmployee.emp_id,
         position_id: selectedPosition,
         workType: selectedWorkType,
@@ -111,7 +111,6 @@ const JobManage = () => {
     }
   };
 
-  // Hủy thao tác thêm chức vụ
   const handleCancelForm = () => {
     setShowForm(false); // Đóng form
   };

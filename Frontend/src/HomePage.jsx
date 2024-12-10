@@ -48,6 +48,7 @@ const HomePage = () => {
           </div>
           <p>Quản Lý Chức vụ</p>
         </Link>
+        {/* thẻ quản lý  */}
         <Link to="/SalaryManagement" className="flashcard">
           <div className="icon">
             <i className="fas fa-users"></i>
@@ -64,7 +65,7 @@ const HomePage = () => {
           <div className="icon">
             <i className="fas fa-users"></i>
           </div>
-          <p>Quản Lý chấm công</p>
+          <p>Tính Lương</p>
         </Link>
       </div>
     </div>

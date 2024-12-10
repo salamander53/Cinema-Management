@@ -27,17 +27,14 @@ function App() {
           <Route path="/Cinema" element={<Cinema />} />
           <Route path="/employee" element={<Employee />} />
           <Route path="/jobmanage" element={<JobManage />} />
-<<<<<<< HEAD
           <Route path="/AddJob" element={<AddJob />} />
           <Route path="/SalaryManagement" element={<SalaryManagement />} />
         </Route>
-=======
           <Route path="/AddJob" element={<AddJob/>} />
           <Route path="/SalaryManagement" element={<SalaryManagement/>} />
           <Route path="/ShiftManage" element={<ShiftManage/>} />
           <Route path="/SalaryPay" element={<SalaryPay/>} />
       
->>>>>>> cba2c2ce689c83268b1733a966dd19f6c9627828
       </Routes>
     </Router>
   );

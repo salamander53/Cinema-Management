@@ -12,6 +12,15 @@ export class WorkHourService {
     private readonly employeeRepository: Repository<Employee>,
   ) {}
 
+  async getAllWorkHours(): Promise<employee_workhour[]> {
+    try {
+      const workHours = await this.employeeWorkHourRepository.find();
+      return workHours;
+    } catch (error) {
+      throw new Error('Failed to get work hours: ' + error.message);
+    }
+  }
+
   async addWorkHour(workHourData: {
     emp_id: string;
     cinema_id: string;

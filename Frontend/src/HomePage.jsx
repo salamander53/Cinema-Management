@@ -54,6 +54,12 @@ const HomePage = () => {
           </div>
           <p>Lương theo vị trí</p>
         </Link>
+        <Link to="/SalaryManagement" className="flashcard">
+          <div className="icon">
+            <i className="fas fa-users"></i>
+          </div>
+          <p>Quản Lý chấm công</p>
+        </Link>
       </div>
     </div>
   );

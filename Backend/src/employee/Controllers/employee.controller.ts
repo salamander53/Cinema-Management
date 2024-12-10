@@ -81,23 +81,32 @@ export class EmployeeController {
   //   }
   // }
 
-  @Patch(':emp_id')
-  async updateEmployeeToCinema(
-    @Body('cinema_id') cinemaId: string,
-    @Param('emp_id') empId: string,
-  ): Promise<{ message: string }> {
+  // @Patch(':emp_id')
+  // async updateEmployeeToCinema(
+  //   @Body('cinema_id') cinemaId: string,
+  //   @Param('emp_id') empId: string,
+  // ): Promise<{ message: string }> {
+  //   try {
+  //     const result = await this.employeeService.updateEmployeeToCinema(
+  //       cinemaId,
+  //       empId,
+  //     );
+  //     if (!result.affected) {
+  //       throw new HttpException(
+  //         `Employee with emp_id ${empId} not found`,
+  //         HttpStatus.NOT_FOUND,
+  //       );
+  //     }
+  //     return { message: 'Cập nhật thành công!' };
+  //   } catch (error) {
+  //     throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+  //   }
+  // }
+  @Post('/cinema') async addCinema(
+    @Body() body: { emp_id: string; cinema_id: string },
+  ): Promise<Employee> {
     try {
-      const result = await this.employeeService.updateEmployeeToCinema(
-        cinemaId,
-        empId,
-      );
-      if (!result.affected) {
-        throw new HttpException(
-          `Employee with emp_id ${empId} not found`,
-          HttpStatus.NOT_FOUND,
-        );
-      }
-      return { message: 'Cập nhật thành công!' };
+      return await this.employeeService.addCinema(body.emp_id, body.cinema_id);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }

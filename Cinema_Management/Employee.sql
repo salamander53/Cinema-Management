@@ -36,12 +36,9 @@ CREATE TABLE Employee_WorkHour
 (
   emp_id VARCHAR(10) NOT NULL,
   cinema_id VARCHAR(100) NOT NULL,
-  workhour INT ,
-  PRIMARY KEY (emp_id, cinema_id),
-  FOREIGN KEY (emp_id) REFERENCES Employee(emp_id),
-  FOREIGN KEY (cinema_id) REFERENCES Cinema(cinema_id)
+  workhour INT NOT NULL,
 );
-
+DROP TABLE Employee_WorkHour
 CREATE TABLE Employee_CurrentPosition
 (
   emp_id VARCHAR(10) NOT NULL,
@@ -80,18 +77,18 @@ VALUES
 --   ('Trần Văn H', '1986-07-25', 852741963, '555 Đường H, Quận 8', '0917788990');
 
 -- Chèn dữ liệu vào bảng Employee_WorkType
-INSERT INTO Employee_WorkType
-  ( workType_name)
-VALUES
-  ( 'Full-time'),
-  ('Part-time');
--- Chèn dữ liệu vào bảng Employee_Position
-INSERT INTO Employee_Position
-  ( position_name)
-VALUES
-  ( 'Manager'),
-  ('Cashier'),
-  ('Cleaner');
+-- INSERT INTO Employee_WorkType
+--   ( workType_name)
+-- VALUES
+--   ( 'Full-time'),
+--   ('Part-time');
+-- -- Chèn dữ liệu vào bảng Employee_Position
+-- INSERT INTO Employee_Position
+--   ( position_name)
+-- VALUES
+--   ( 'Manager'),
+--   ('Cashier'),
+--   ('Cleaner');
 
 -- -- Chèn dữ liệu vào bảng Salary1hour
 -- INSERT INTO Salary1hour

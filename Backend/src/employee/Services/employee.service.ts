@@ -61,15 +61,30 @@ export class EmployeeService {
     await this.employeeRepository.delete(empId);
   }
 
-  async updateEmployeeToCinema(cinemaId: string, empId: string) {
-    const cinema = await this.cinemaRepository.findOne({
-      where: { cinema_id: cinemaId },
-    });
-    if (!cinema) throw new Error(`Cinema with ID ${cinemaId} not found`);
-    const result = await this.employeeRepository.update(
-      { emp_id: empId },
-      { cinema_id: cinemaId },
-    );
-    return result;
+  // async updateEmployeeToCinema(cinemaId: string, empId: string) {
+  //   const cinema = await this.cinemaRepository.findOne({
+  //     where: { cinema_id: cinemaId },
+  //   });
+  //   if (!cinema) throw new Error(`Cinema with ID ${cinemaId} not found`);
+  //   const result = await this.employeeRepository.update(
+  //     { emp_id: empId },
+  //     { cinema_id: cinemaId },
+  //   );
+  //   return result;
+  // }
+
+  async addCinema(emp_id: string, cinema_id: string): Promise<Employee> {
+    try {
+      const employee = await this.employeeRepository.findOne({
+        where: { emp_id: emp_id },
+      });
+      if (!employee) {
+        throw new Error('Employee not found');
+      }
+      employee.cinema_id = cinema_id;
+      return await this.employeeRepository.save(employee);
+    } catch (error) {
+      throw new Error('Failed to assign cinema: ' + error.message);
+    }
   }
 }

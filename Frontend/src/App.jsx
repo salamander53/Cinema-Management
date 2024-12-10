@@ -4,17 +4,13 @@ import Login from "./Login";
 import Home from "./HomePage.jsx";
 import Employee from "./employee";
 import Cinema from "./Cinema";
-<<<<<<< HEAD
-import JobManage from "./jobmanage";
-import SalaryManagement from "./SalaryManagement";
-import AddJob from "./Addjob";
-=======
+
 import ShiftManage from "./ShiftManage"
 import JobManage from "./jobmanage"
 import SalaryManagement from "./SalaryManagement"
 import SalaryPay from "./SalaryPay"
 import AddJob from "./Addjob"
->>>>>>> cba2c2ce689c83268b1733a966dd19f6c9627828
+
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

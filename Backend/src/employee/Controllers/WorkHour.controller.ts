@@ -13,6 +13,18 @@ import { employee_workhour } from 'src/Etities/Employee/WorkHour.entity';
 export class WorkHourController {
   constructor(private readonly employeeWorkHourService: WorkHourService) {}
 
+  @Get() async getAllWorkHours(): Promise<{
+    message: string;
+    workHours: employee_workhour[];
+  }> {
+    try {
+      const workHours = await this.employeeWorkHourService.getAllWorkHours();
+      return { message: 'Lấy dữ liệu giờ làm việc thành công!', workHours };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
   @Post() async addWorkHour(
     @Body()
     workHourData: {
@@ -34,6 +46,9 @@ export class WorkHourController {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
+  @Get()
+  async getWorkHour() {}
+
   @Get('/aggregated') async getAggregatedWorkHours(): Promise<{
     message: string;
     data: { emp_id: string; cinema_id: string; total_workhour: number }[];

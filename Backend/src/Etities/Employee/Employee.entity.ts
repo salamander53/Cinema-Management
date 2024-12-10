@@ -31,6 +31,6 @@ export class Employee {
   )
   currentPositions: employee_currentposition[];
 
-  @OneToMany(() => employee_workhour, (workHour) => workHour.employee)
-  workHours: employee_workhour[];
+  // @OneToMany(() => employee_workhour, (workHour) => workHour.employee)
+  // workHours: employee_workhour[];
 }

@@ -103,7 +103,9 @@ INSERT INTO employee_workhour
     )
 VALUES
     ( -- first row: values for the columns in the list above
-        'EMP0021', 'CIN01', 6
+        'EMP0020', 'CIN01', 6
 )
 -- add more rows here
 GO
+
+DELETE FROM employee_workhour

@@ -13,6 +13,6 @@ export class Cinema {
   @Column()
   cinema_address: string;
 
-  @OneToMany(() => employee_workhour, (workHour) => workHour.cinema)
-  workHour: employee_workhour[];
+  // @OneToMany(() => employee_workhour, (workHour) => workHour.cinema)
+  // workHour: employee_workhour[];
 }

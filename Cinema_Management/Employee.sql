@@ -34,10 +34,12 @@ CREATE TABLE Salary1hour
 
 CREATE TABLE Employee_WorkHour
 (
+  log_id INT IDENTITY(1,1) PRIMARY KEY,
   emp_id VARCHAR(10) NOT NULL,
   cinema_id VARCHAR(100) NOT NULL,
   workhour INT NOT NULL,
 );
+
 DROP TABLE Employee_WorkHour
 CREATE TABLE Employee_CurrentPosition
 (

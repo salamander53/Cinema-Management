@@ -24,6 +24,11 @@ export class WorkHourController {
     try {
       const workHour =
         await this.employeeWorkHourService.addWorkHour(workHourData);
+      if (!workHour)
+        throw new HttpException(
+          'Không tồn tại nhân viên hoặc rạp phim!',
+          HttpStatus.BAD_REQUEST,
+        );
       return { message: 'Thêm giờ làm việc thành công!', workHour };
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);

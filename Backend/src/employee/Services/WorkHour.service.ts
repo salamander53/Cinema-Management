@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { Employee } from 'src/Etities/Employee/Employee.entity';
 import { employee_workhour } from 'src/Etities/Employee/WorkHour.entity';
 import { Repository } from 'typeorm';
 
@@ -7,6 +8,8 @@ export class WorkHourService {
   constructor(
     @Inject('EMPLOYEE_WORKHOUR_REPOSITORY')
     private readonly employeeWorkHourRepository: Repository<employee_workhour>,
+    @Inject('EMPLOYEE_REPOSITORY')
+    private readonly employeeRepository: Repository<Employee>,
   ) {}
 
   async addWorkHour(workHourData: {
@@ -15,12 +18,36 @@ export class WorkHourService {
     workhour: number;
   }): Promise<employee_workhour> {
     try {
-      const newWorkHour = this.employeeWorkHourRepository.create({
-        emp_id: workHourData.emp_id,
-        cinema_id: workHourData.cinema_id,
-        workhour: workHourData.workhour,
+      const enmployee = await this.employeeRepository.findOne({
+        where: {
+          emp_id: workHourData.emp_id,
+          cinema_id: workHourData.cinema_id,
+        },
       });
-      return await this.employeeWorkHourRepository.save(newWorkHour);
+      if (!enmployee) return null;
+      // await this.employeeWorkHourRepository.insert({
+      //   emp_id: workHourData.emp_id,
+      //   cinema_id: workHourData.cinema_id,
+      //   // workhour: workHourData.workhour,
+      // });
+      await this.employeeWorkHourRepository
+        .createQueryBuilder()
+        .insert()
+        .into(employee_workhour)
+        .values({
+          emp_id: workHourData.emp_id,
+          cinema_id: workHourData.cinema_id,
+          workhour: workHourData.workhour,
+        })
+        .execute();
+      const newWorkHour = await this.employeeWorkHourRepository.findOne({
+        where: {
+          emp_id: workHourData.emp_id,
+          cinema_id: workHourData.cinema_id,
+          workhour: workHourData.workhour,
+        },
+      });
+      return newWorkHour;
     } catch (error) {
       throw new Error('Failed to add work hour: ' + error.message);
     }

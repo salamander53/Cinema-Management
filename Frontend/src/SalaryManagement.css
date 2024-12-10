@@ -1,0 +1,91 @@
+/* Container chính */
+.salary-container {
+    padding: 30px;
+    text-align: center;
+    background-color: #f0f8ff; /* Xanh nhạt */
+    min-height: 100vh;
+}
+
+/* Tiêu đề */
+.salary-title {
+    font-size: 2rem;
+    color: #0056b3; /* Xanh dương đậm */
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Bảng */
+.salary-table {
+    width: 90%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Đầu bảng */
+.salary-table thead {
+    background-color: #007bff; /* Xanh dương */
+    color: white;
+}
+
+.salary-table th {
+    padding: 15px;
+    text-align: center;
+    font-size: 1rem;
+    text-transform: uppercase;
+}
+
+/* Hàng dữ liệu */
+.salary-table tbody tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.salary-table tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+.salary-table tbody tr:hover {
+    background-color: #e8f4ff; /* Màu xanh nhạt khi hover */
+}
+
+/* Ô dữ liệu */
+.salary-table td {
+    padding: 12px 15px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* Nút Chỉnh Sửa */
+.edit-button {
+    text-decoration: none;
+    background-color: #0056b3; /* Xanh dương đậm */
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.edit-button:hover {
+    background-color: #003d80; /* Đậm hơn khi hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Trạng thái không có dữ liệu */
+.no-data {
+    padding: 10px;
+    text-align: center;
+    color: #e74c3c;
+}

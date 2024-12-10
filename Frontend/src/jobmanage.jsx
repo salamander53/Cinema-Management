@@ -1,45 +1,36 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import AxiosInstance from "./Components/AxiosInstance"; // Import AxiosInstance
 import { useNavigate } from "react-router-dom";
-import "./JobManage.css"; 
+import "./JobManage.css";
 import { toast } from "react-toastify";
 
 const JobManage = () => {
-  const [employees, setEmployees] = useState([]); // Dữ liệu nhân viên
-  const [search, setSearch] = useState(""); // Ô tìm kiếm
-  const [positions, setPositions] = useState([]); // Dữ liệu chức vụ
-  const [selectedPosition, setSelectedPosition] = useState(""); // Chức vụ đã chọn
-  const [selectedWorkType, setSelectedWorkType] = useState(""); // Loại công việc đã chọn
-  const [showForm, setShowForm] = useState(false); // Hiển thị form thêm chức vụ
-  const [currentEmployee, setCurrentEmployee] = useState(null); // Nhân viên đang được chọn
-  const navigate = useNavigate(); // Điều hướng
-
-  // Gọi API lấy dữ liệu từ backend
+  const [employees, setEmployees] = useState([]); 
+  const [search, setSearch] = useState("");
+  const [positions, setPositions] = useState([]); 
+  const [selectedPosition, setSelectedPosition] = useState(""); 
+  const [selectedWorkType, setSelectedWorkType] = useState(""); 
+  const [showForm, setShowForm] = useState(false); 
+  const [currentEmployee, setCurrentEmployee] = useState(null); 
+  const navigate = useNavigate(); 
   useEffect(() => {
-    // Lấy danh sách nhân viên
-    axios
-      .get("http://localhost:3000/currentpostion")
+    AxiosInstance.get("http://localhost:3000/currentpostion")
       .then((res) => {
-        setEmployees(res.data); // Cập nhật state với dữ liệu từ API
+        setEmployees(res.data);
       })
       .catch((error) => {
         console.error("Lỗi khi gọi API:", error);
-        toast.error("Không thể tải dữ liệu nhân viên!"); // Thông báo lỗi
+        toast.error("Không thể tải dữ liệu nhân viên!");
       });
-
-    // Lấy danh sách chức vụ có sẵn
-    axios
-      .get("http://localhost:3000/salary1hour/positions")
+    AxiosInstance.get("http://localhost:3000/salary1hour/positions")
       .then((res) => {
-        setPositions(res.data); // Cập nhật state với dữ liệu từ API
+        setPositions(res.data); 
       })
       .catch((error) => {
         console.error("Lỗi khi gọi API lấy chức vụ:", error);
         toast.error("Không thể tải dữ liệu chức vụ!");
       });
   }, []);
-
-  // Xử lý tìm kiếm theo tên hoặc ID
   const handleSearch = () => {
     return employees.filter(
       (emp) =>
@@ -49,8 +40,6 @@ const JobManage = () => {
   };
 
   const filteredEmployees = handleSearch();
-
-  // Hàm xử lý xóa chức vụ
   const handleDeletePosition = async (emp) => {
     if (!emp.current_positions.length) {
       toast.warning("Nhân viên này chưa có chức vụ để xóa!");
@@ -58,19 +47,19 @@ const JobManage = () => {
     }
 
     try {
-      // Gửi request DELETE tới API
-      await axios.delete("http://localhost:3000/currentpostion", {
+   
+      await AxiosInstance.delete("http://localhost:3000/currentpostion", {
         data: {
           emp_id: emp.emp_id,
         },
       });
       toast.success(`Xóa chức vụ thành công cho ${emp.emp_name}!`);
 
-      // Cập nhật danh sách nhân viên sau khi xóa
+      
       setEmployees((prev) =>
         prev.map((e) =>
           e.emp_id === emp.emp_id
-            ? { ...e, current_positions: [] } // Xóa chức vụ và loại công việc
+            ? { ...e, current_positions: [] } 
             : e
         )
       );
@@ -98,21 +87,22 @@ const JobManage = () => {
   const handleWorkTypeChange = (e) => {
     setSelectedWorkType(e.target.value);
   };
+
   const handleSavePosition = async () => {
     if (!selectedPosition || !selectedWorkType) {
       toast.warning("Vui lòng chọn chức vụ và loại công việc!");
       return;
     }
-  
+
     try {
-      await axios.post("http://localhost:3000/currentpostion", {
+      await AxiosInstance.post("http://localhost:3000/currentpostion", {
         emp_id: currentEmployee.emp_id,
         position_id: selectedPosition,
         workType: selectedWorkType,
       });
-  
+
       toast.success(`Thêm chức vụ thành công cho ${currentEmployee.emp_name}!`);
-  
+
       // Reload lại trang sau khi lưu thành công
       window.location.reload();
     } catch (error) {

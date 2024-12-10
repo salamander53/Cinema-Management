@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import AxiosInstance from "./Components/AxiosInstance"; // Import AxiosInstance
 
 const SalaryManagement = () => {
   const [salaries, setSalaries] = useState([]); // Dữ liệu từ API
@@ -15,7 +15,7 @@ const SalaryManagement = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/salary1hour");
+        const res = await AxiosInstance.get("http://localhost:3000/salary1hour");
         console.log("Dữ liệu từ API:", res.data.salaries); // Kiểm tra dữ liệu
         setSalaries(res.data.salaries); // Lưu dữ liệu vào state
         setFilteredData(res.data.salaries); // Lưu dữ liệu cho mục đích lọc
@@ -78,17 +78,11 @@ const SalaryManagement = () => {
     }
     try {
       // Gửi yêu cầu cập nhật lương lên server
-      const response = await axios.patch('http://localhost:3000/salary1hour', {
+      const response = await AxiosInstance.patch('http://localhost:3000/salary1hour', {
         position_id: editingSalary.position_id,
         workType_id: editingSalary.workType_id,
         salary1hour: newSalary,
-
-          
-      }
-      
-    );
-
-      
+      });
 
       // Cập nhật lại dữ liệu sau khi lưu thành công
       const updatedSalaries = salaries.map((item) => 
@@ -115,7 +109,7 @@ const SalaryManagement = () => {
   // Xử lý khi nhấn nút xoá lương
   const handleDeleteSalary = async (position_id, workType_id) => {
     try {
-      await axios.delete(`http://localhost:3000/salary1hour`, {
+      await AxiosInstance.delete(`http://localhost:3000/salary1hour`, {
         data: { position_id, workType_id },
       });
       // Cập nhật dữ liệu sau khi xóa
@@ -347,5 +341,3 @@ const SalaryManagement = () => {
 };
 
 export default SalaryManagement;
-
-

@@ -1,63 +1,58 @@
 import React, { useState, useEffect } from "react";
-import AxiosInstance from "./Components/AxiosInstance.jsx"; 
+import AxiosInstance from "./Components/AxiosInstance.jsx";  // Importing AxiosInstance
 import "./Employee.css";
 import { Link } from "react-router-dom";
 
 const Employee = () => {
   const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState("");
-  const [showForm, setShowForm] = useState(false);  // State để kiểm soát form
+  const [showForm, setShowForm] = useState(false);
   const [newEmployee, setNewEmployee] = useState({
     emp_name: "",
     emp_birth_date: "",
     emp_cccd: "",
     emp_address: "",
     emp_phone: "",
-    cinemaid: "",  // Thêm cinemaid vào state
+    cinemaid: "", // Added cinemaid to state
   });
 
-  // Hàm tìm kiếm nhân viên theo tên hoặc ID
   const handleSearch = (e) => setSearch(e.target.value);
 
-  // Hàm xoá nhân viên khỏi danh sách và cơ sở dữ liệu
   const handleDelete = (id) => {
-    AxiosInstance.delete(`employee/${id}`)
-      .then(() => {
-        // Sau khi xoá thành công, loại bỏ nhân viên khỏi danh sách
-        const filteredEmployees = employees.filter(
-          (employee) => employee.emp_id !== id
-        );
-        setEmployees(filteredEmployees);
-      })
-      .catch((error) => {
-        console.log("Lỗi khi xoá nhân viên: ", error);
-      });
+    if (window.confirm("Bạn có chắc chắn muốn xóa nhân viên này?")) {
+      AxiosInstance.delete(`employee/${id}`)
+        .then(() => {
+          const filteredEmployees = employees.filter(
+            (employee) => employee.emp_id !== id
+          );
+          setEmployees(filteredEmployees);
+        })
+        .catch((error) => {
+          console.log("Lỗi khi xoá nhân viên: ", error);
+        });
+    }
   };
 
-  // Hiển thị form thêm nhân viên mới
   const handleAdd = () => {
-    setShowForm(true); 
+    setShowForm(true);
   };
 
-  // Đóng form thêm nhân viên
   const handleCloseForm = () => {
-    setShowForm(false);  
+    setShowForm(false);
   };
 
-  // Cập nhật giá trị các trường trong form khi người dùng thay đổi
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewEmployee({ ...newEmployee, [name]: value });
   };
 
-  // Lưu nhân viên mới vào cơ sở dữ liệu
   const handleSave = () => {
     AxiosInstance.post("employee/", newEmployee)
       .then((res) => {
-        AxiosInstance.get("employee/")
+        AxiosInstance.get("employee/") // Fetch employees after adding a new one
           .then((response) => {
-            setEmployees(response.data);  // Cập nhật danh sách nhân viên
-            setShowForm(false);  // Đóng form sau khi lưu thành công
+            setEmployees(response.data); // Update employee list
+            setShowForm(false); // Close the form
           })
           .catch((error) => {
             console.log("Lỗi khi gọi API để lấy danh sách nhân viên: ", error);
@@ -68,16 +63,14 @@ const Employee = () => {
       });
   };
 
-  // Lọc danh sách nhân viên theo tên hoặc ID
   const filteredEmployees = employees.filter(
     (employee) =>
       employee.emp_name.toLowerCase().includes(search.toLowerCase()) ||
       employee.emp_id.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Lấy danh sách nhân viên khi component được tải
   useEffect(() => {
-    AxiosInstance.get("employee/")
+    AxiosInstance.get("employee/") // Use AxiosInstance to fetch data
       .then((res) => {
         setEmployees(res.data);
       })
@@ -92,7 +85,6 @@ const Employee = () => {
         <i className="fas fa-users"></i> Quản Lý Nhân Viên
       </h1>
 
-      {/* Tìm kiếm nhân viên */}
       <input
         type="text"
         className="search-input"
@@ -101,12 +93,10 @@ const Employee = () => {
         onChange={handleSearch}
       />
 
-      {/* Nút thêm nhân viên */}
       <button className="add-button" onClick={handleAdd}>
         <i className="fas fa-user-plus"></i> Thêm Nhân Viên
       </button>
 
-      {/* Hiển thị form thêm nhân viên nếu showForm là true */}
       {showForm && (
         <div className="overlay">
           <div className="form-container">
@@ -163,7 +153,7 @@ const Employee = () => {
                 />
               </div>
               <div className="form-group">
-                <label>ID Rạp:</label> {/* Thêm trường nhập cinemaid */}
+                <label>ID Rạp:</label>
                 <input
                   type="text"
                   name="cinemaid"
@@ -185,7 +175,6 @@ const Employee = () => {
         </div>
       )}
 
-      {/* Bảng hiển thị danh sách nhân viên */}
       <table className="employee-table">
         <thead>
           <tr>
@@ -195,7 +184,7 @@ const Employee = () => {
             <th>CCCD</th>
             <th>Địa Chỉ</th>
             <th>Số Điện Thoại</th>
-            <th>ID Rạp</th> {/* Thêm cột ID Rạp */}
+            <th>ID Rạp</th>
             <th>Hành Động</th>
           </tr>
         </thead>
@@ -219,7 +208,7 @@ const Employee = () => {
                 </Link>
                 <button
                   className="delete-button"
-                  onClick={() => handleDelete(employee.emp_id)} // Gọi handleDelete khi nhấn vào nút xoá
+                  onClick={() => handleDelete(employee.emp_id)}
                   title="Xóa"
                 >
                   <i className="fas fa-trash-alt"></i> Xóa
@@ -228,7 +217,7 @@ const Employee = () => {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table>            
     </div>
   );
 };

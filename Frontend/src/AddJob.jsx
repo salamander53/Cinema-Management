@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import AxiosInstance from "./Components/AxiosInstance"; // Import AxiosInstance
 import { useLocation, useNavigate } from "react-router-dom";
-import "./AddJob.css"; 
+import "./AddJob.css";
 import { toast } from "react-toastify";
 
 const AddJob = () => {
-  const location = useLocation(); 
+  const location = useLocation();
   const navigate = useNavigate();
   const { emp_id } = location.state || {}; // Lấy emp_id từ state
 
@@ -21,10 +21,8 @@ const AddJob = () => {
       return;
     }
   
-    axios
-      .get(`http://localhost:3000/currentpostion`)
+    AxiosInstance.get("http://localhost:3000/currentpostion")
       .then((res) => {
-     
         const employeeData = res.data.find((emp) => emp.emp_id === emp_id);
         if (employeeData) {
           setEmployee(employeeData);
@@ -49,7 +47,7 @@ const AddJob = () => {
 
     try {
       // Gửi request POST để thêm chức vụ
-      await axios.post("http://localhost:3000/currentpostion", {
+      await AxiosInstance.post("http://localhost:3000/currentpostion", {
         emp_id,
         position_name: positionName,
         workType_name: workTypeName,

@@ -74,4 +74,16 @@ export class Salary1HourService {
   async findAllWorkTypes(): Promise<employee_worktype[]> {
     return this.workTypeRepository.find();
   }
+  async addPosition(positionData: {
+    position_name: string;
+  }): Promise<employee_position> {
+    try {
+      const newPosition = this.positionRepository.create({
+        position_name: positionData.position_name,
+      });
+      return await this.positionRepository.save(newPosition);
+    } catch (error) {
+      throw new Error('Failed to add position: ' + error.message);
+    }
+  }
 }

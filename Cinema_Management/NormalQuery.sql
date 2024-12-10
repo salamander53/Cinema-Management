@@ -83,4 +83,27 @@ DELETE FROM employee_worktype
 SELECT *
 FROM salary1hour
 
+SELECT *
+FROM employee_workhour
 
+DELETE FROM employee_workhour
+
+-- Update rows in table 'TableName'
+UPDATE employee_position
+SET
+    [position_name] = 'Seller'
+    -- add more columns and values here
+WHERE position_id = 4	/* add search conditions here */
+GO
+
+-- Insert rows into table 'employee_workhour'
+INSERT INTO employee_workhour
+    ( -- columns to insert data into
+    [emp_id], [cinema_id], [workhour]
+    )
+VALUES
+    ( -- first row: values for the columns in the list above
+        'EMP0021', 'CIN01', 6
+)
+-- add more rows here
+GO

@@ -13,7 +13,7 @@ import { AuthModule } from './auth/auth.module';
     DatabaseModule,
     EmployeeModule,
     CurrentPositionModule,
-    // WorkHourModule,
+    WorkHourModule,
 
     CinemaModule,
     AuthModule,

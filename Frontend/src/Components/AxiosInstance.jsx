@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:3000/";
+const baseUrl = "http://20.249.67.154/";
 const AxiosInstance = axios.create({
   baseURL: baseUrl,
   timeout: 5000,
@@ -12,13 +12,12 @@ const AxiosInstance = axios.create({
 
 AxiosInstance.interceptors.request.use((config) => {
   const token = localStorage.getItem("Token");
-  console.log("token: ", token);
+  // console.log("token: ", token);
   if (token) {
     config.headers.authorization = `Bearer ${token}`;
   } else {
     config.headers.authorization = ``;
   }
-  console.log("config.headers: ", config.headers);
   return config;
 });
 

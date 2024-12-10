@@ -4,17 +4,11 @@ import Login from "./Login";
 import Home from "./HomePage.jsx";
 import Employee from "./employee";
 import Cinema from "./Cinema";
-<<<<<<< HEAD
+import ShiftManage from "./ShiftManage";
 import JobManage from "./jobmanage";
 import SalaryManagement from "./SalaryManagement";
+import SalaryPay from "./SalaryPay";
 import AddJob from "./Addjob";
-=======
-import ShiftManage from "./ShiftManage"
-import JobManage from "./jobmanage"
-import SalaryManagement from "./SalaryManagement"
-import SalaryPay from "./SalaryPay"
-import AddJob from "./Addjob"
->>>>>>> cba2c2ce689c83268b1733a966dd19f6c9627828
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -31,17 +25,11 @@ function App() {
           <Route path="/Cinema" element={<Cinema />} />
           <Route path="/employee" element={<Employee />} />
           <Route path="/jobmanage" element={<JobManage />} />
-<<<<<<< HEAD
           <Route path="/AddJob" element={<AddJob />} />
           <Route path="/SalaryManagement" element={<SalaryManagement />} />
+          <Route path="/ShiftManage" element={<ShiftManage />} />
+          <Route path="/SalaryPay" element={<SalaryPay />} />
         </Route>
-=======
-          <Route path="/AddJob" element={<AddJob/>} />
-          <Route path="/SalaryManagement" element={<SalaryManagement/>} />
-          <Route path="/ShiftManage" element={<ShiftManage/>} />
-          <Route path="/SalaryPay" element={<SalaryPay/>} />
-      
->>>>>>> cba2c2ce689c83268b1733a966dd19f6c9627828
       </Routes>
     </Router>
   );

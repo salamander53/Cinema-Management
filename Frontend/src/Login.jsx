@@ -22,7 +22,7 @@ const Login = () => {
       password: password,
     })
       .then((res) => {
-        console.log(res.status);
+        console.log(res);
         localStorage.setItem("Token", res.data);
         navigate(`/HomePage`);
         toast.success("Login successful!");
@@ -38,7 +38,7 @@ const Login = () => {
       className="d-flex justify-content-center align-items-center"
       style={{
         // height: "100vh",
-        
+
         // backgroundColor: "#6399d6",
         backgroundSize: "cover",
         color: "#ffffff",

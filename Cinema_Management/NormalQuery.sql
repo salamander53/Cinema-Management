@@ -109,3 +109,4 @@ VALUES
 GO
 
 DELETE FROM employee_workhour
+

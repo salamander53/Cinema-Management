@@ -41,6 +41,19 @@ const HomePage = () => {
           </div>
           <p>Quản Lý Rạp Phim</p>
         </Link>
+        {/* flashcard quản lý chức vụ */}
+        <Link to="/jobmanage" className="flashcard">
+          <div className="icon">
+            <i className="fas fa-users"></i>
+          </div>
+          <p>Quản Lý Chức vụ</p>
+        </Link>
+        <Link to="/SalaryManagement" className="flashcard">
+          <div className="icon">
+            <i className="fas fa-users"></i>
+          </div>
+          <p>Quản Lý Chức vụ</p>
+        </Link>
       </div>
     </div>
   );

@@ -77,7 +77,7 @@ const JobManage = () => {
           type="text"
           placeholder="Tìm kiếm theo tên hoặc ID..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => setSearch(e.target.value)} //
         />
       </div>
 

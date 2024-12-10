@@ -52,7 +52,7 @@ const HomePage = () => {
           <div className="icon">
             <i className="fas fa-users"></i>
           </div>
-          <p>Quản Lý Chức vụ</p>
+          <p>Quản Lý bảng lương</p>
         </Link>
       </div>
     </div>

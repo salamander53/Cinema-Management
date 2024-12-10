@@ -24,7 +24,8 @@ function App() {
           <Route path="/Cinema" element={<Cinema />} />
           <Route path="/employee" element={<Employee />} />
           <Route path="/jobmanage" element={<JobManage />} />
-          <Route path="/AddJob" element={<AddJob />} />
+          <Route path="/AddJob" element={<AddJob/>} />
+          <Route path="/SalaryManagement" element={<SalaryManagement/>} />
       
       </Routes>
     </Router>

@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Patch,
+  Post,
 } from '@nestjs/common';
 import { Salary1HourService } from '../Services/Salary1Hour.service';
 import { salary1hour } from 'src/Etities/Employee/Salary1hour.entity';
@@ -59,5 +60,15 @@ export class Salary1HourController {
   }
   @Get('/positions') async findAllPositions(): Promise<employee_position[]> {
     return this.salary1hourService.findAllPositions();
+  }
+  @Post('/positions') async addPosition(
+    @Body() positionData: { position_name: string },
+  ): Promise<{ message: string; position: employee_position }> {
+    try {
+      const position = await this.salary1hourService.addPosition(positionData);
+      return { message: 'Thêm vị trí công việc thành công!', position };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 }

@@ -15,7 +15,8 @@ const Employee = () => {
     emp_phone: "",
     cinemaid: "", // Added cinemaid to state
   });
-
+   // updategit
+   
   const handleSearch = (e) => setSearch(e.target.value);
 
   const handleDelete = (id) => {

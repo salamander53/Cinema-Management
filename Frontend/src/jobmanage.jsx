@@ -51,7 +51,7 @@ const JobManage = () => {
     }
 
     try {
-      await AxiosInstance.delete("/currentpostion", { 
+      await AxiosInstance.delete("/currentpostion", { // Sử dụng AxiosInstance để gửi yêu cầu DELETE
         data: {
           emp_id: emp.emp_id,
         },
@@ -61,7 +61,7 @@ const JobManage = () => {
       setEmployees((prev) =>
         prev.map((e) =>
           e.emp_id === emp.emp_id
-            ? { ...e, current_positions: [] }
+            ? { ...e, current_positions: [] } // Cập nhật lại dữ liệu nhân viên
             : e
         )
       );

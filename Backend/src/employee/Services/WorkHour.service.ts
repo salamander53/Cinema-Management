@@ -61,6 +61,26 @@ export class WorkHourService {
       throw new Error('Failed to add work hour: ' + error.message);
     }
   }
+
+  async deleteWorkHours(workHourData: {
+    emp_id: string;
+    cinema_id: string;
+  }): Promise<void> {
+    try {
+      await this.employeeWorkHourRepository
+        .createQueryBuilder()
+        .delete()
+        .from(employee_workhour)
+        .where('emp_id = :emp_id', { emp_id: workHourData.emp_id })
+        .andWhere('cinema_id = :cinema_id', {
+          cinema_id: workHourData.cinema_id,
+        })
+        .execute();
+    } catch (error) {
+      throw new Error('Thất bại khi thanh toán: ' + error.message);
+    }
+  }
+
   async getAggregatedWorkHours(): Promise<
     { emp_id: string; cinema_id: string; total_workhour: number }[]
   > {

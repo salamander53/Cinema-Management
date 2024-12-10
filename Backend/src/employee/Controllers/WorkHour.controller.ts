@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -46,8 +47,17 @@ export class WorkHourController {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
-  @Get()
-  async getWorkHour() {}
+
+  @Delete() async deleteWorkHours(
+    @Body() workHourData: { emp_id: string; cinema_id: string },
+  ): Promise<{ message: string }> {
+    try {
+      await this.employeeWorkHourService.deleteWorkHours(workHourData);
+      return { message: 'Thanh toán thành công!' };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
 
   @Get('/aggregated') async getAggregatedWorkHours(): Promise<{
     message: string;

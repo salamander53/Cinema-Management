@@ -4,34 +4,68 @@ import "./Employee.css";
 import { Link } from "react-router-dom";
 
 const Employee = () => {
-  // State cho danh sách nhân viên và ô tìm kiếm
-  const [employees, setEmployees] = useState([]); // Ban đầu để mảng rỗng
+  const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState("");
+  const [showForm, setShowForm] = useState(false);  // State để kiểm soát form
+  const [newEmployee, setNewEmployee] = useState({
+    emp_name: "",
+    emp_birth_date: "",
+    emp_cccd: "",
+    emp_address: "",
+    emp_phone: "",
+    cinemaid: "",  // Thêm cinemaid vào state
+  });
 
-  // Hàm tìm kiếm nhân viên
-  const handleSearch = (e) => {
-    setSearch(e.target.value);
-  };
+  // Hàm tìm kiếm nhân viên theo tên hoặc ID
+  const handleSearch = (e) => setSearch(e.target.value);
 
-  // Hàm xóa nhân viên
+  // Hàm xoá nhân viên khỏi danh sách và cơ sở dữ liệu
   const handleDelete = (id) => {
-    const filteredEmployees = employees.filter(
-      (employee) => employee.emp_id !== id
-    );
-    setEmployees(filteredEmployees);
+    AxiosInstance.delete(`employee/${id}`)
+      .then(() => {
+        // Sau khi xoá thành công, loại bỏ nhân viên khỏi danh sách
+        const filteredEmployees = employees.filter(
+          (employee) => employee.emp_id !== id
+        );
+        setEmployees(filteredEmployees);
+      })
+      .catch((error) => {
+        console.log("Lỗi khi xoá nhân viên: ", error);
+      });
   };
 
-  // Hàm thêm nhân viên (mock)
+  // Hiển thị form thêm nhân viên mới
   const handleAdd = () => {
-    const newEmployee = {
-      emp_id: `EMP00${employees.length + 1}`,
-      emp_name: "New Employee",
-      emp_birth_date: "2000-01-01",
-      emp_cccd: 12345678,
-      emp_address: "New Address",
-      emp_phone: "0000000000",
-    };
-    setEmployees([...employees, newEmployee]);
+    setShowForm(true); 
+  };
+
+  // Đóng form thêm nhân viên
+  const handleCloseForm = () => {
+    setShowForm(false);  
+  };
+
+  // Cập nhật giá trị các trường trong form khi người dùng thay đổi
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewEmployee({ ...newEmployee, [name]: value });
+  };
+
+  // Lưu nhân viên mới vào cơ sở dữ liệu
+  const handleSave = () => {
+    AxiosInstance.post("employee/", newEmployee)
+      .then((res) => {
+        AxiosInstance.get("employee/")
+          .then((response) => {
+            setEmployees(response.data);  // Cập nhật danh sách nhân viên
+            setShowForm(false);  // Đóng form sau khi lưu thành công
+          })
+          .catch((error) => {
+            console.log("Lỗi khi gọi API để lấy danh sách nhân viên: ", error);
+          });
+      })
+      .catch((error) => {
+        console.log("Lỗi khi thêm nhân viên: ", error);
+      });
   };
 
   // Lọc danh sách nhân viên theo tên hoặc ID
@@ -41,12 +75,11 @@ const Employee = () => {
       employee.emp_id.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Gọi API để lấy danh sách nhân viên khi component được render lần đầu
+  // Lấy danh sách nhân viên khi component được tải
   useEffect(() => {
     AxiosInstance.get("employee/")
       .then((res) => {
-        console.log(res) ;
-        setEmployees(res.data); 
+        setEmployees(res.data);
       })
       .catch((error) => {
         console.log("Lỗi khi gọi API: ", error);
@@ -55,7 +88,6 @@ const Employee = () => {
 
   return (
     <div className="employee-container">
-      {/* Tiêu đề */}
       <h1 className="employee-title">
         <i className="fas fa-users"></i> Quản Lý Nhân Viên
       </h1>
@@ -69,12 +101,91 @@ const Employee = () => {
         onChange={handleSearch}
       />
 
-      {/* Nút Thêm Nhân Viên */}
+      {/* Nút thêm nhân viên */}
       <button className="add-button" onClick={handleAdd}>
         <i className="fas fa-user-plus"></i> Thêm Nhân Viên
       </button>
 
-      {/* Bảng thông tin nhân viên */}
+      {/* Hiển thị form thêm nhân viên nếu showForm là true */}
+      {showForm && (
+        <div className="overlay">
+          <div className="form-container">
+            <h2>Thêm Nhân Viên Mới</h2>
+            <form>
+              <div className="form-group">
+                <label>Tên:</label>
+                <input
+                  type="text"
+                  name="emp_name"
+                  value={newEmployee.emp_name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Ngày Sinh:</label>
+                <input
+                  type="date"
+                  name="emp_birth_date"
+                  value={newEmployee.emp_birth_date}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>CCCD:</label>
+                <input
+                  type="text"
+                  name="emp_cccd"
+                  value={newEmployee.emp_cccd}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Địa Chỉ:</label>
+                <input
+                  type="text"
+                  name="emp_address"
+                  value={newEmployee.emp_address}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Số Điện Thoại:</label>
+                <input
+                  type="text"
+                  name="emp_phone"
+                  value={newEmployee.emp_phone}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>ID Rạp:</label> {/* Thêm trường nhập cinemaid */}
+                <input
+                  type="text"
+                  name="cinemaid"
+                  value={newEmployee.cinemaid}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="form-actions">
+                <button type="button" className="save-button" onClick={handleSave}>
+                  Lưu
+                </button>
+                <button type="button" className="cancel-button" onClick={handleCloseForm}>
+                  Hủy
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Bảng hiển thị danh sách nhân viên */}
       <table className="employee-table">
         <thead>
           <tr>
@@ -84,6 +195,7 @@ const Employee = () => {
             <th>CCCD</th>
             <th>Địa Chỉ</th>
             <th>Số Điện Thoại</th>
+            <th>ID Rạp</th> {/* Thêm cột ID Rạp */}
             <th>Hành Động</th>
           </tr>
         </thead>
@@ -96,8 +208,8 @@ const Employee = () => {
               <td>{employee.emp_cccd}</td>
               <td>{employee.emp_address}</td>
               <td>{employee.emp_phone}</td>
+              <td>{employee.cinemaid}</td>
               <td>
-                {/* Link tới trang Detail */}
                 <Link
                   to={`/detail/${employee.emp_id}`}
                   className="detail-button"
@@ -105,10 +217,9 @@ const Employee = () => {
                 >
                   <i className="fas fa-info-circle"></i> Chi Tiết
                 </Link>
-                {/* Nút Xóa */}
                 <button
                   className="delete-button"
-                  onClick={() => handleDelete(employee.emp_id)}
+                  onClick={() => handleDelete(employee.emp_id)} // Gọi handleDelete khi nhấn vào nút xoá
                   title="Xóa"
                 >
                   <i className="fas fa-trash-alt"></i> Xóa

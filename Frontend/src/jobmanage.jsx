@@ -3,13 +3,20 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./JobManage.css"; 
 import { toast } from "react-toastify";
+
 const JobManage = () => {
   const [employees, setEmployees] = useState([]); // Dữ liệu nhân viên
   const [search, setSearch] = useState(""); // Ô tìm kiếm
+  const [positions, setPositions] = useState([]); // Dữ liệu chức vụ
+  const [selectedPosition, setSelectedPosition] = useState(""); // Chức vụ đã chọn
+  const [selectedWorkType, setSelectedWorkType] = useState(""); // Loại công việc đã chọn
+  const [showForm, setShowForm] = useState(false); // Hiển thị form thêm chức vụ
+  const [currentEmployee, setCurrentEmployee] = useState(null); // Nhân viên đang được chọn
   const navigate = useNavigate(); // Điều hướng
 
   // Gọi API lấy dữ liệu từ backend
   useEffect(() => {
+    // Lấy danh sách nhân viên
     axios
       .get("http://localhost:3000/currentpostion")
       .then((res) => {
@@ -18,6 +25,17 @@ const JobManage = () => {
       .catch((error) => {
         console.error("Lỗi khi gọi API:", error);
         toast.error("Không thể tải dữ liệu nhân viên!"); // Thông báo lỗi
+      });
+
+    // Lấy danh sách chức vụ có sẵn
+    axios
+      .get("http://localhost:3000/salary1hour/positions")
+      .then((res) => {
+        setPositions(res.data); // Cập nhật state với dữ liệu từ API
+      })
+      .catch((error) => {
+        console.error("Lỗi khi gọi API lấy chức vụ:", error);
+        toast.error("Không thể tải dữ liệu chức vụ!");
       });
   }, []);
 
@@ -41,7 +59,7 @@ const JobManage = () => {
 
     try {
       // Gửi request DELETE tới API
-      await axios.delete(`http://localhost:3000/currentpostion`, {
+      await axios.delete("http://localhost:3000/currentpostion", {
         data: {
           emp_id: emp.emp_id,
         },
@@ -62,9 +80,50 @@ const JobManage = () => {
     }
   };
 
-  // Điều hướng đến trang thêm chức vụ
-  const handleAddJob = (emp) => {
-    navigate("/AddJob", { state: { emp_id: emp.emp_id } }); // Truyền dữ liệu qua state
+  const handleAddPosition = (emp) => {
+    if (emp.current_positions.length > 0 && emp.current_positions[0].position_name) {
+      toast.warning("Nhân viên đã có chức vụ, không thể thêm mới!");
+      return;
+    }
+    setCurrentEmployee(emp);
+    setShowForm(true);
+  };
+
+  // Xử lý thay đổi chức vụ
+  const handlePositionChange = (e) => {
+    setSelectedPosition(e.target.value);
+  };
+
+  // Xử lý thay đổi loại công việc
+  const handleWorkTypeChange = (e) => {
+    setSelectedWorkType(e.target.value);
+  };
+  const handleSavePosition = async () => {
+    if (!selectedPosition || !selectedWorkType) {
+      toast.warning("Vui lòng chọn chức vụ và loại công việc!");
+      return;
+    }
+  
+    try {
+      await axios.post("http://localhost:3000/currentpostion", {
+        emp_id: currentEmployee.emp_id,
+        position_id: selectedPosition,
+        workType: selectedWorkType,
+      });
+  
+      toast.success(`Thêm chức vụ thành công cho ${currentEmployee.emp_name}!`);
+  
+      // Reload lại trang sau khi lưu thành công
+      window.location.reload();
+    } catch (error) {
+      console.error("Lỗi khi lưu chức vụ:", error);
+      toast.error("Thêm chức vụ thất bại!");
+    }
+  };
+
+  // Hủy thao tác thêm chức vụ
+  const handleCancelForm = () => {
+    setShowForm(false); // Đóng form
   };
 
   return (
@@ -77,7 +136,7 @@ const JobManage = () => {
           type="text"
           placeholder="Tìm kiếm theo tên hoặc ID..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)} //
+          onChange={(e) => setSearch(e.target.value)}
         />
       </div>
 
@@ -113,7 +172,7 @@ const JobManage = () => {
                 {/* Nút Thêm Chức Vụ */}
                 <button
                   className="add-btn"
-                  onClick={() => handleAddJob(emp)}
+                  onClick={() => handleAddPosition(emp)}
                 >
                   Thêm chức vụ
                 </button>
@@ -129,6 +188,50 @@ const JobManage = () => {
           ))}
         </tbody>
       </table>
+
+      {/* Form thêm chức vụ */}
+      {showForm && (
+        <div className="overlay">
+          <div className="form-container">
+            <h2>Chọn chức vụ cho {currentEmployee?.emp_name}</h2>
+            <div className="form-group">
+              <label>Chức vụ:</label>
+              <select
+                value={selectedPosition}
+                onChange={handlePositionChange}
+                required
+              >
+                <option value="">Chọn chức vụ</option>
+                {positions.map((position) => (
+                  <option key={position.position_id} value={position.position_id}>
+                    {position.position_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Loại công việc:</label>
+              <select
+                value={selectedWorkType}
+                onChange={handleWorkTypeChange}
+                required
+              >
+                <option value="">Chọn loại công việc</option>
+                <option value="Full-time">Full-time</option>
+                <option value="Part-time">Part-time</option>
+              </select>
+            </div>
+            <div className="form-actions">
+              <button type="button" onClick={handleSavePosition}>
+                Lưu
+              </button>
+              <button type="button" onClick={handleCancelForm}>
+                Hủy
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

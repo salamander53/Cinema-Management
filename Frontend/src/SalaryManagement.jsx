@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from "react";
-import AxiosInstance from "./Components/AxiosInstance"; 
+import AxiosInstance from "./Components/AxiosInstance";
+import Navbar from "./Navbar";
 
 const SalaryManagement = () => {
-  const [salaries, setSalaries] = useState([]); // Dữ liệu từ API
-  const [filteredData, setFilteredData] = useState([]); 
-  const [searchQuery, setSearchQuery] = useState(""); 
-  const [filterType, setFilterType] = useState(""); 
+  const [salaries, setSalaries] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterType, setFilterType] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 5; 
-  const [editingSalary, setEditingSalary] = useState(null); 
-  const [newSalary, setNewSalary] = useState(""); 
+  const rowsPerPage = 5;
+  const [editingSalary, setEditingSalary] = useState(null);
+  const [newSalary, setNewSalary] = useState("");
 
-  // Gọi API lấy dữ liệu
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await AxiosInstance.get("/salary1hour");
-        console.log("Dữ liệu từ API:", res.data.salaries);
-        setSalaries(res.data.salaries); 
-        setFilteredData(res.data.salaries); 
+        setSalaries(res.data.salaries);
+        setFilteredData(res.data.salaries);
       } catch (error) {
         console.error("Lỗi khi gọi API:", error);
       }
@@ -27,18 +26,14 @@ const SalaryManagement = () => {
     fetchData();
   }, []);
 
-  // Xử lý tìm kiếm và lọc
   useEffect(() => {
     let filtered = salaries;
-
-    // Lọc theo workType_name (Full-time hoặc Part-time)
     if (filterType) {
       filtered = filtered.filter(
         (item) => item.workType.workType_name === filterType
       );
     }
 
-    // Tìm kiếm theo position_name
     if (searchQuery) {
       filtered = filtered.filter((item) =>
         item.position.position_name
@@ -47,45 +42,37 @@ const SalaryManagement = () => {
       );
     }
 
-    setFilteredData(filtered); // Cập nhật danh sách được lọc
-    setCurrentPage(1); // Reset về trang đầu tiên sau khi tìm kiếm hoặc lọc
+    setFilteredData(filtered);
+    setCurrentPage(1);
   }, [searchQuery, filterType, salaries]);
 
-  // Dữ liệu cho trang hiện tại
   const startIndex = (currentPage - 1) * rowsPerPage;
   const currentData = filteredData.slice(startIndex, startIndex + rowsPerPage);
-
-  // Tổng số trang
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
 
-  // Xử lý khi nhấn nút chỉnh sửa lương
   const handleEditSalary = (position_id, workType_id, currentSalary) => {
-    setEditingSalary({ position_id, workType_id }); // Lưu thông tin đang chỉnh sửa
-    setNewSalary(currentSalary); // Hiển thị giá trị lương hiện tại để chỉnh sửa
+    setEditingSalary({ position_id, workType_id });
+    setNewSalary(currentSalary);
   };
 
-  // Xử lý khi huỷ chỉnh sửa
   const handleCancelEdit = () => {
-    setEditingSalary(null); // Huỷ chỉnh sửa
-    setNewSalary(""); // Xoá giá trị lương đã nhập
+    setEditingSalary(null);
+    setNewSalary("");
   };
 
-  // Xử lý khi lưu lương
   const handleSaveSalary = async () => {
     if (newSalary === "") {
       alert("Vui lòng nhập lương mới");
       return;
     }
     try {
-      // Gửi yêu cầu cập nhật lương lên server
-      const response = await AxiosInstance.patch('salary1hour', {
+      const response = await AxiosInstance.patch("salary1hour", {
         position_id: editingSalary.position_id,
         workType_id: editingSalary.workType_id,
         salary1hour: newSalary,
       });
 
-      // Cập nhật lại dữ liệu sau khi lưu thành công
-      const updatedSalaries = salaries.map((item) => 
+      const updatedSalaries = salaries.map((item) =>
         item.position_id === editingSalary.position_id &&
         item.workType_id === editingSalary.workType_id
           ? { ...item, salary1hour: parseInt(newSalary) }
@@ -94,27 +81,25 @@ const SalaryManagement = () => {
 
       setSalaries(updatedSalaries);
       setFilteredData(updatedSalaries);
-      setEditingSalary(null); // Kết thúc chỉnh sửa
-      setNewSalary(""); // Xoá giá trị đã nhập
+      setEditingSalary(null);
+      setNewSalary("");
     } catch (error) {
-      // Xử lý lỗi nếu có
       if (error.response) {
         alert(`Lỗi: ${error.response.data.message}`);
       } else {
-        alert('Lỗi không xác định');
+        alert("Lỗi không xác định");
       }
     }
   };
 
-  // Xử lý khi nhấn nút xoá lương
   const handleDeleteSalary = async (position_id, workType_id) => {
     try {
       await AxiosInstance.delete(`/salary1hour`, {
         data: { position_id, workType_id },
       });
-      // Cập nhật dữ liệu sau khi xóa
       const updatedSalaries = salaries.filter(
-        (item) => item.position_id !== position_id || item.workType_id !== workType_id
+        (item) =>
+          item.position_id !== position_id || item.workType_id !== workType_id
       );
       setSalaries(updatedSalaries);
       setFilteredData(updatedSalaries);
@@ -123,7 +108,6 @@ const SalaryManagement = () => {
     }
   };
 
-  // Xử lý thay đổi trang
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
@@ -131,32 +115,25 @@ const SalaryManagement = () => {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1 style={{ color: "#2c3e50", textAlign: "center" }}>Quản lý lương</h1>
+    <div className="container" style={{ paddingTop: "100px" }}>
+      <Navbar />
+      <h1 className="text text mb-4">Quản lý lương</h1>
 
       {/* Thanh tìm kiếm */}
-      <div style={{ marginBottom: "20px", display: "flex", gap: "10px" }}>
+      <div className="d-flex mb-3">
         <input
           type="text"
           placeholder="Tìm kiếm theo tên vị trí..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          style={{
-            padding: "10px",
-            border: "1px solid #ccc",
-            borderRadius: "5px",
-            width: "500px",
-          }}
+          className="form-control me-2"
+          style={{ width: "500px" }}
         />
         <select
           value={filterType}
           onChange={(e) => setFilterType(e.target.value)}
-          style={{
-            padding: "10px",
-            border: "1px solid #ccc",
-            borderRadius: "5px",
-            width: "200px",
-          }}
+          className="form-select"
+          style={{ width: "200px" }}
         >
           <option value="">Tất cả loại công việc</option>
           <option value="Full-time">Full-time</option>
@@ -164,174 +141,125 @@ const SalaryManagement = () => {
         </select>
       </div>
 
-      {/* Bảng hiển thị */}
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          backgroundColor: "#f9f9f9",
-          borderRadius: "10px",
-          overflow: "hidden",
-          boxShadow: "0 4px 8px",
-        }}
-      >
-        <thead>
-          <tr
-            style={{
-              backgroundColor: "#007bff",
-              color: "#fff",
-              borderBottom: "1px solid #ddd",
-            }}
-          >
-            <th style={{ padding: "15px", border: "none", textAlign: "center" }}>
-              Tên vị trí
-            </th>
-            <th style={{ padding: "15px", border: "none", textAlign: "center" }}>
-              Loại công việc
-            </th>
-            <th style={{ padding: "15px", border: "none", textAlign: "center" }}>
-              Lương/giờ
-            </th>
-            <th style={{ padding: "15px", border: "none", textAlign: "center" }}>
-              Thao tác
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentData.length > 0 ? (
-            currentData.map((item) => (
-              <tr
-                key={`${item.position_id}-${item.workType_id}`}
-                style={{ borderBottom: "1px solid #ddd" }}
-              >
-                <td style={{ padding: "10px", border: "none", textAlign: "center" }}>
-                  {item.position.position_name}
-                </td>
-                <td style={{ padding: "10px", border: "none", textAlign: "center" }}>
-                  {item.workType.workType_name}
-                </td>
-                <td style={{ padding: "10px", border: "none", textAlign: "center" }}>
-                  {item.position_id === editingSalary?.position_id && item.workType_id === editingSalary?.workType_id ? (
-                    <input
-                      type="number"
-                      value={newSalary}
-                      onChange={(e) => setNewSalary(e.target.value)}
-                      placeholder="Nhập lương mới"
-                      style={{ padding: "5px", width: "100px", textAlign: "center" }}
-                    />
-                  ) : (
-                    item.salary1hour !== null ? item.salary1hour : "Chưa có"
-                  )}
-                </td>
-                <td style={{ padding: "10px", border: "none", textAlign: "center" }}>
-                  {item.position_id === editingSalary?.position_id && item.workType_id === editingSalary?.workType_id ? (
-                    <>
-                      <button
-                        onClick={handleSaveSalary}
-                        style={{
-                          padding: "8px 12px",
-                          backgroundColor: "#3498db",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: "5px",
-                          cursor: "pointer",
-                        }}
-                      >
-                        Lưu
-                      </button>
-                      <button
-                        onClick={handleCancelEdit}
-                        style={{
-                          padding: "8px 12px",
-                          backgroundColor: "#e74c3c",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: "5px",
-                          cursor: "pointer",
-                          marginLeft: "10px",
-                        }}
-                      >
-                        X
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        onClick={() =>
-                          handleEditSalary(item.position_id, item.workType_id, item.salary1hour)
-                        }
-                        style={{
-                          padding: "8px 12px",
-                          backgroundColor: "#f39c12",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: "5px",
-                          cursor: "pointer",
-                        }}
-                      >
-                        Sửa
-                      </button>
-                      <button
-                        onClick={() =>
-                          handleDeleteSalary(item.position_id, item.workType_id)
-                        }
-                        style={{
-                          padding: "8px 12px",
-                          backgroundColor: "#e74c3c",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: "5px",
-                          cursor: "pointer",
-                          marginLeft: "10px",
-                        }}
-                      >
-                        Xoá
-                      </button>
-                    </>
-                  )}
-                </td>
+      {/* Card container for table */}
+      <div className="card shadow">
+        <div className="card-header d-flex justify-content-between align-items-center">
+          <h5 className="mb-0">Danh sách lương</h5>
+        </div>
+
+        {/* Bảng hiển thị */}
+        <div className="table-responsive">
+          <table className="table table-striped table-bordered table-hover">
+            <thead className="table-dark">
+              <tr>
+                <th className="text-center">Tên vị trí</th>
+                <th className="text-center">Loại công việc</th>
+                <th className="text-center">Lương/giờ</th>
+                <th className="text-center">Thao tác</th>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="4" style={{ textAlign: "center", padding: "20px" }}>
-                Không có dữ liệu.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {currentData.length > 0 ? (
+                currentData.map((item) => (
+                  <tr key={`${item.position_id}-${item.workType_id}`}>
+                    <td className="text-center">
+                      {item.position.position_name}
+                    </td>
+                    <td className="text-center">
+                      {item.workType.workType_name}
+                    </td>
+                    <td className="text-center">
+                      {item.position_id === editingSalary?.position_id &&
+                      item.workType_id === editingSalary?.workType_id ? (
+                        <input
+                          type="number"
+                          value={newSalary}
+                          onChange={(e) => setNewSalary(e.target.value)}
+                          placeholder="Nhập lương mới"
+                          className="form-control"
+                          style={{ width: "120px", margin: "0 auto" }}
+                        />
+                      ) : item.salary1hour !== null ? (
+                        item.salary1hour
+                      ) : (
+                        "Chưa có"
+                      )}
+                    </td>
+                    <td className="text-center">
+                      {item.position_id === editingSalary?.position_id &&
+                      item.workType_id === editingSalary?.workType_id ? (
+                        <>
+                          <button
+                            onClick={handleSaveSalary}
+                            className="btn btn-success me-2"
+                          >
+                            Lưu
+                          </button>
+                          <button
+                            onClick={handleCancelEdit}
+                            className="btn btn-danger"
+                          >
+                            Hủy
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() =>
+                              handleEditSalary(
+                                item.position_id,
+                                item.workType_id,
+                                item.salary1hour
+                              )
+                            }
+                            className="btn btn-warning me-2"
+                          >
+                            Sửa
+                          </button>
+                          <button
+                            onClick={() =>
+                              handleDeleteSalary(
+                                item.position_id,
+                                item.workType_id
+                              )
+                            }
+                            className="btn btn-danger"
+                          >
+                            Xóa
+                          </button>
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="text-center py-3">
+                    Không có dữ liệu.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       {/* Phân trang */}
-      <div style={{ marginTop: "20px", textAlign: "center" }}>
+      <div className="d-flex justify-content-center mt-3">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#3498db",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-            cursor: currentPage === 1 ? "not-allowed" : "pointer",
-          }}
+          className="btn btn-primary me-2"
         >
           Trang trước
         </button>
-        <span style={{ padding: "0 10px", fontSize: "16px" }}>
+        <span className="align-self-center">
           {currentPage} / {totalPages}
         </span>
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#3498db",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-            cursor: currentPage === totalPages ? "not-allowed" : "pointer",
-          }}
+          className="btn btn-primary ms-2"
         >
           Trang sau
         </button>

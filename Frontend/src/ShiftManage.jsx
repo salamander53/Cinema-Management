@@ -1,160 +1,92 @@
 import React, { useEffect, useState } from "react";
-import AxiosInstance from "./Components/AxiosInstance"; 
+import AxiosInstance from "./Components/AxiosInstance";
 import { toast } from "react-toastify";
-import styled from "styled-components";
+import Navbar from "./Navbar";
 
-const Container = styled.div`
-  margin: 2rem auto;
-  max-width: 800px;
-`;
+// Tách biệt logic tìm kiếm ra ngoài render
+const filterWorkHours = (workHours, employees, search) => {
+  return workHours.filter((work) => {
+    const employee = employees.find((emp) => emp.emp_id === work.emp_id);
+    return (
+      employee &&
+      (employee.emp_name.toLowerCase().includes(search.toLowerCase()) ||
+        work.emp_id.toLowerCase().includes(search.toLowerCase()))
+    );
+  });
+};
 
-const Title = styled.h1`
-  text-align: center;
-  margin-bottom: 2rem;
-  color: #343a40;
-`;
-
-const SearchInput = styled.input`
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 1.5rem;
-  border: 1px solid #ced4da;
-  border-radius: 5px;
-  font-size: 16px;
-`;
-
-const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  margin: 0 auto;
-  border-radius: 10px;
-  overflow: hidden;
-`;
-
-const Thead = styled.thead`
-  background-color: #007bff;
-  color: white;
-`;
-
-const Th = styled.th`
-  padding: 12px;
-  text-align: center;
-`;
-
-const Td = styled.td`
-  padding: 12px;
-  text-align: center;
-  border: 1px solid #dee2e6;
-`;
-
-const Tr = styled.tr`
-  &:nth-child(odd) {
-    background-color: #f8f9fa;
-  }
-  &:hover {
-    background-color: #e9ecef;
-  }
-`;
-
-const AddButton = styled.button`
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 1rem;
-  &:hover {
-    background-color: #0056b3;
-  }
-`;
-
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const ModalContent = styled.div`
-  background-color: white;
-  border-radius: 10px;
-  padding: 20px;
-  width: 400px;
-  max-width: 90%;
-`;
-
-const ModalHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-`;
-
-const ModalTitle = styled.h5`
-  margin: 0;
-`;
-
-const CloseButton = styled.button`
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: #6c757d;
-  cursor: pointer;
-`;
-
-const FormGroup = styled.div`
-  margin-bottom: 1rem;
-`;
-
-const FormLabel = styled.label`
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-`;
-
-const FormSelect = styled.select`
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ced4da;
-  border-radius: 5px;
-`;
-
-const FormInput = styled.input`
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ced4da;
-  border-radius: 5px;
-`;
-
-const SaveButton = styled.button`
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  &:hover {
-    background-color: #218838;
-  }
-`;
-
-const CancelButton = styled.button`
-  background-color: #6c757d;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  margin-left: 10px;
-  &:hover {
-    background-color: #5a6268;
-  }
-`;
+// Tách biệt component modal để dễ quản lý
+const ShiftFormModal = ({
+  employees,
+  selectedEmployee,
+  setSelectedEmployee,
+  workHourInput,
+  setWorkHourInput,
+  handleSaveShift,
+  setShowForm,
+}) => (
+  <div className="modal d-block" tabIndex="-1" role="dialog">
+    <div className="modal-dialog modal-dialog-centered" role="document">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h5 className="modal-title">Thêm Ca Làm Việc</h5>
+          <button
+            type="button"
+            className="btn-close"
+            onClick={() => setShowForm(false)}
+            aria-label="Close"
+          ></button>
+        </div>
+        <div className="modal-body">
+          <div className="mb-3">
+            <label htmlFor="employeeSelect" className="form-label">
+              Chọn Nhân Viên:
+            </label>
+            <select
+              id="employeeSelect"
+              className="form-select"
+              value={selectedEmployee}
+              onChange={(e) => setSelectedEmployee(e.target.value)}
+            >
+              <option value="">Chọn nhân viên</option>
+              {employees
+                .filter((employee) => employee.cinema_id !== null)
+                .map((emp) => (
+                  <option key={emp.emp_id} value={emp.emp_id}>
+                    {emp.emp_name} - {emp.emp_id}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="workHourInput" className="form-label">
+              Số Giờ Làm Việc:
+            </label>
+            <input
+              id="workHourInput"
+              type="number"
+              className="form-control"
+              value={workHourInput}
+              onChange={(e) => setWorkHourInput(e.target.value)}
+              placeholder="Nhập số giờ làm việc"
+            />
+          </div>
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-success" onClick={handleSaveShift}>
+            Lưu
+          </button>
+          <button
+            className="btn btn-secondary"
+            onClick={() => setShowForm(false)}
+          >
+            Hủy
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 const ShiftManage = () => {
   const [workHours, setWorkHours] = useState([]);
@@ -165,29 +97,14 @@ const ShiftManage = () => {
   const [workHourInput, setWorkHourInput] = useState("");
 
   useEffect(() => {
-    // Use AxiosInstance to fetch work hours
     AxiosInstance.get("/workhour")
       .then((res) => setWorkHours(res.data.workHours))
       .catch(() => toast.error("Không thể tải dữ liệu giờ làm việc!"));
 
-    // Use AxiosInstance to fetch employees
     AxiosInstance.get("/employee")
       .then((res) => setEmployees(res.data))
       .catch(() => toast.error("Không thể tải dữ liệu nhân viên!"));
   }, []);
-
-  const handleSearch = () => {
-    return workHours.filter((work) => {
-      const employee = employees.find((emp) => emp.emp_id === work.emp_id);
-      return (
-        employee &&
-        (employee.emp_name.toLowerCase().includes(search.toLowerCase()) ||
-          work.emp_id.toLowerCase().includes(search.toLowerCase()))
-      );
-    });
-  };
-
-  const filteredWorkHours = handleSearch();
 
   const handleSaveShift = async () => {
     if (!selectedEmployee || !workHourInput) {
@@ -203,7 +120,6 @@ const ShiftManage = () => {
         workhour: parseInt(workHourInput),
       };
 
-      // Use AxiosInstance to post new shift data
       await AxiosInstance.post("/workhour", newShift);
       toast.success("Thêm ca thành công!");
       setWorkHours((prev) => [...prev, newShift]);
@@ -215,77 +131,74 @@ const ShiftManage = () => {
     }
   };
 
+  const filteredWorkHours = filterWorkHours(workHours, employees, search);
+
   return (
-    <Container>
-      <Title>Quản Lý Ca Làm Việc</Title>
-      <SearchInput
-        type="text"
-        placeholder="Tìm kiếm theo tên nhân viên hoặc ID..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-      <Table>
-        <Thead>
-          <tr>
-            <Th>Tên Nhân Viên</Th>
-            <Th>ID Nhân Viên</Th>
-            <Th>ID Rạp Phim</Th>
-            <Th>Số Giờ Làm</Th>
-          </tr>
-        </Thead>
-        <tbody>
-          {filteredWorkHours.map((work) => {
-            const employee = employees.find((emp) => emp.emp_id === work.emp_id);
-            return (
-              <Tr key={work.log_id}>
-                <Td>{employee ? employee.emp_name : "Không xác định"}</Td>
-                <Td>{work.emp_id}</Td>
-                <Td>{work.cinema_id}</Td>
-                <Td>{work.workhour}</Td>
-              </Tr>
-            );
-          })}
-        </tbody>
-      </Table>
-      <AddButton onClick={() => setShowForm(true)}>Thêm Ca</AddButton>
-      {showForm && (
-        <ModalOverlay>
-          <ModalContent>
-            <ModalHeader>
-              <ModalTitle>Thêm Ca Làm Việc</ModalTitle>
-              <CloseButton onClick={() => setShowForm(false)}>&times;</CloseButton>
-            </ModalHeader>
-            <FormGroup>
-              <FormLabel>Chọn Nhân Viên:</FormLabel>
-              <FormSelect
-                value={selectedEmployee}
-                onChange={(e) => setSelectedEmployee(e.target.value)}
-              >
-                <option value="">Chọn nhân viên</option>
-                {employees.map((emp) => (
-                  <option key={emp.emp_id} value={emp.emp_id}>
-                    {emp.emp_name} - {emp.emp_id}
-                  </option>
-                ))}
-              </FormSelect>
-            </FormGroup>
-            <FormGroup>
-              <FormLabel>Số Giờ Làm Việc:</FormLabel>
-              <FormInput
-                type="number"
-                value={workHourInput}
-                onChange={(e) => setWorkHourInput(e.target.value)}
-                placeholder="Nhập số giờ làm việc"
-              />
-            </FormGroup>
-            <div>
-              <SaveButton onClick={handleSaveShift}>Lưu</SaveButton>
-              <CancelButton onClick={() => setShowForm(false)}>Hủy</CancelButton>
-            </div>
-          </ModalContent>
-        </ModalOverlay>
-      )}
-    </Container>
+    <div
+      className="d-flex flex-column align-items-center justify-content-center"
+      style={{ paddingTop: "100px" }}
+    >
+      <div className="w-75 rounded bg-white border shadow">
+        <Navbar />
+        <div className="d-flex justify-content-between align-items-center border-bottom p-2">
+          <h2 className="text ">
+            <i className="bi bi-hourglass-split mx-2"></i>Lịch Sử Chấm Công
+          </h2>
+          <button className="btn btn-success" onClick={() => setShowForm(true)}>
+            <i className="bi bi-clock-history mx-2"></i>
+            Chấm Công
+          </button>
+        </div>
+        <div className="p-3">
+          <input
+            type="text"
+            className="form-control mb-4"
+            placeholder="Tìm kiếm theo tên nhân viên hoặc ID..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <table className="table table-hover ">
+            <thead className="table">
+              <tr>
+                <th className="text-center">Tên Nhân Viên</th>
+                <th className="text-center">ID Nhân Viên</th>
+                <th className="text-center">ID Rạp Phim</th>
+                <th className="text-center">Số Giờ Làm</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredWorkHours.map((work) => {
+                const employee = employees.find(
+                  (emp) => emp.emp_id === work.emp_id
+                );
+                return (
+                  <tr key={work.log_id}>
+                    <td className="text-center">
+                      {employee ? employee.emp_name : "Không xác định"}
+                    </td>
+                    <td className="text-center">{work.emp_id}</td>
+                    <td className="text-center">{work.cinema_id}</td>
+                    <td className="text-center">{work.workhour}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {showForm && (
+          <ShiftFormModal
+            employees={employees}
+            selectedEmployee={selectedEmployee}
+            setSelectedEmployee={setSelectedEmployee}
+            workHourInput={workHourInput}
+            setWorkHourInput={setWorkHourInput}
+            handleSaveShift={handleSaveShift}
+            setShowForm={setShowForm}
+          />
+        )}
+      </div>
+    </div>
   );
 };
 

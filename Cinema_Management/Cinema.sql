@@ -15,4 +15,7 @@ INSERT INTO Cinema
 VALUES
   ('CIN01', 'CGV', 'District 7 Ward 10 HCM'),
   ('CIN02', 'Galaxy', 'District 10 Ward 7 HCM');
+
+
+  SELECT * FROM Cinema;
   

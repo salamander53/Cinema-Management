@@ -9,8 +9,14 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("Token");
-    navigate("/"); // Redirect to the login page after logout
+    const isConfirmed = window.confirm("Bạn có chắc chắn muốn đăng xuất?");
+    if (isConfirmed) {
+      // Thực hiện hành động đăng xuất (ví dụ: chuyển hướng hoặc gọi API)
+      console.log("Đã đăng xuất!");
+      localStorage.removeItem("Token");
+      navigate("/"); // Redirect to the login page after logout
+    } 
+    
   };
 
   return (
@@ -18,12 +24,7 @@ const Navbar = () => {
       <div className="container-fluid">
         {/* Logo Section with Back Button */}
         <div className="d-flex align-items-center">
-          <button
-            onClick={handleBack}
-            className="btn btn-light me-3 d-flex align-items-center"
-          >
-            <i className="fas fa-arrow-left"></i>
-          </button>
+
           <div className="navbar-brand d-flex align-items-center">
             <span>Hãng Phim Quốc Tế</span>
           </div>

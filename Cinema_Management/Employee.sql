@@ -65,6 +65,16 @@ VALUES
   ('Employee', 0),
   ('Cinema', 0);
 
+SELECT * FROM Employee;
+SELECT * FROM Employee_Position;
+SELECT * FROM Employee_WorkType;
+SELECT * FROM Salary1hour;
+SELECT * FROM Employee_WorkHour;
+SELECT * FROM Employee_CurrentPosition;
+
+
+
+
 -- -- Chèn dữ liệu vào bảng Employee
 -- INSERT INTO Employee
 --   (emp_name, emp_birth_date, emp_cccd, emp_address, emp_phone)

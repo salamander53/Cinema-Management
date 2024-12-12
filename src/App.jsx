@@ -9,7 +9,6 @@ import ShiftManage from "./ShiftManage";
 import JobManage from "./jobmanage";
 import SalaryManagement from "./SalaryManagement";
 import SalaryPay from "./SalaryPay";
-import AddJob from "./Addjob";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -34,9 +33,7 @@ function App() {
           <Route path="/Cinema" element={<Cinema />} />
           <Route path="/employee" element={<Employee />} />
           <Route path="/jobmanage" element={<JobManage />} />
-
           <Route path="/SalaryManagement" element={<SalaryManagement />} />
-          <Route path="/AddJob" element={<AddJob />} />
           <Route path="/ShiftManage" element={<ShiftManage />} />
           <Route path="/SalaryPay" element={<SalaryPay />} />
         </Route>

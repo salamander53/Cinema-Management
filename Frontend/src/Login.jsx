@@ -8,12 +8,9 @@ import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
-
-  // State để lưu thông tin tài khoản và mật khẩu
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  // Xử lý khi nhấn nút Đăng Nhập
   const handleLogin = (e) => {
     e.preventDefault();
 
@@ -34,33 +31,14 @@ const Login = () => {
   };
 
   return (
-    <div
-      className="d-flex justify-content-center align-items-center"
-      style={{
-        // height: "100vh",
-
-        // backgroundColor: "#6399d6",
-        backgroundSize: "cover",
-        color: "#ffffff",
-      }}
-    >
+    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
       <div
         className="card p-4 shadow-lg border-0"
-        style={{
-          width: "400px",
-          borderRadius: "15px",
-          background: "#1e3a8a",
-        }}
+        style={{ width: "400px", borderRadius: "10px" }}
       >
-        <h2
-          className="text-center mb-4 fw-bold"
-          style={{
-            color: "#bbdefb",
-          }}
-        >
+        <h2 className="text-center mb-4 fw-bold text-primary">
           CinemaManagement
         </h2>
-
         <form onSubmit={handleLogin}>
           <div className="mb-3">
             <label htmlFor="username" className="form-label">
@@ -78,11 +56,6 @@ const Login = () => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                style={{
-                  backgroundColor: "#294bbf",
-                  color: "#ffffff",
-                  border: "1px solid #5c6bc0",
-                }}
               />
             </div>
           </div>
@@ -103,36 +76,24 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                style={{
-                  backgroundColor: "#294bbf",
-                  color: "#ffffff",
-                  border: "1px solid #5c6bc0",
-                }}
               />
             </div>
           </div>
 
           <div className="d-grid">
-            <button
-              type="submit"
-              className="btn btn-primary"
-              style={{
-                backgroundColor: "#5c6bc0",
-                border: "none",
-              }}
-            >
+            <button type="submit" className="btn btn-primary">
               Đăng Nhập
             </button>
           </div>
         </form>
 
         <div className="text-center mt-3">
-          <a href="#" className="text-decoration-none text-light">
+          <a href="#" className="text-decoration-none">
             Quên mật khẩu?
           </a>
           <p className="mt-2">
             Chưa có tài khoản?{" "}
-            <a href="#" className="text-decoration-none text-info">
+            <a href="#" className="text-decoration-none">
               Đăng ký ngay
             </a>
           </p>

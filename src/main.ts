@@ -13,6 +13,6 @@ async function bootstrap() {
       optionsSuccessStatus: 204,
     }),
   );
-  await app.listen(80);
+  await app.listen(process.env.PORT || 8080); // Sử dụng biến môi trường hoặc port 8080
 }
 bootstrap();

@@ -387,6 +387,16 @@ export default function Employee() {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [selectedCinemaId, setSelectedCinemaId] = useState("");
   const [cinema, setCinema] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [employeeToDelete, setEmployeeToDelete] = useState(null);
+  const handleShowModal = (id) => {
+    setEmployeeToDelete(id);
+    setShowModal(true);
+  };
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setEmployeeToDelete(null);
+  };
 
   useEffect(() => {
     AxiosInstance.get("employee/")
@@ -400,14 +410,27 @@ export default function Employee() {
 
   const handleSearch = (e) => setSearch(e.target.value);
 
-  const handleDelete = (id) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa nhân viên này?")) {
-      AxiosInstance.delete(`employee/${id}`)
-        .then(() =>
-          setEmployees((prev) => prev.filter((emp) => emp.emp_id !== id))
-        )
-        .catch((error) => console.log("Error deleting employee:", error));
-    }
+  const handleDelete = () => {
+    if (!employeeToDelete) return;
+    AxiosInstance.delete(`/currentpostion`, {
+      data: { emp_id: employeeToDelete },
+    })
+      .then(() => {
+        return AxiosInstance.delete(`/employee/${employeeToDelete}`);
+      })
+      .then(() => {
+        setEmployees((prev) =>
+          prev.filter((emp) => emp.emp_id !== employeeToDelete)
+        );
+        toast.success("Xóa nhân viên thành công!");
+      })
+      .catch((error) => {
+        console.error("Error deleting employee:", error);
+        toast.error("Xóa nhân viên thất bại!");
+      })
+      .finally(() => {
+        handleCloseModal();
+      });
   };
 
   const handleAdd = () => setShowForm(true);
@@ -422,18 +445,36 @@ export default function Employee() {
   const handleSave = () => {
     AxiosInstance.post("employee/", newEmployee)
       .then(() => {
-        AxiosInstance.get("employee/")
-          .then((res) => setEmployees(res.data))
-          .catch((error) => console.log("Error refreshing employees:", error));
         setShowForm(false);
+        toast.success("Thêm nhân viên thành công!");
+        setNewEmployee({
+          emp_name: "",
+          emp_birth_date: "",
+          emp_cccd: "",
+          emp_address: "",
+          emp_phone: "",
+          cinemaid: "",
+        });
       })
-      .catch((error) => console.log("Error adding employee:", error));
+      .catch((error) => {
+        console.error("Error adding employee:", error);
+        if (error.response && error.response.data) {
+          const { message } = error.response.data;
+          if (message.includes("unique constraint")) {
+            toast.error("CCCD hoặc số điện thoại đã tồn tại.");
+          } else {
+            toast.error(
+              "Thêm nhân viên thất bại: CCCD hoặc số điện thoại đã tồn tại."
+            );
+          }
+        } else {
+          toast.error("Thêm nhân viên thất bại.");
+        }
+      });
   };
 
-  const filteredEmployees = employees.filter(
-    (employee) =>
-      employee.emp_name.toLowerCase().includes(search.toLowerCase()) ||
-      employee.emp_id.toLowerCase().includes(search.toLowerCase())
+  const filteredEmployees = employees.filter((employee) =>
+    employee.emp_name.toLowerCase().includes(search.toLowerCase())
   );
 
   const handleAppointClick = (employee) => {
@@ -471,42 +512,37 @@ export default function Employee() {
         </div>
 
         {showForm && (
-          <div className="modal fade show d-block" tabIndex="-1">
+          <div className="modal fade show d-block">
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">Thêm Nhân Viên Mới</h5>
+                  <h5 className="modal-title">Thêm Nhân Viên</h5>
                   <button
                     className="btn-close"
-                    onClick={handleCloseForm}
+                    onClick={() => setShowForm(false)}
                   ></button>
                 </div>
                 <div className="modal-body">
                   <form>
                     {[
-                      { label: "Tên", name: "emp_name", type: "text" },
+                      { name: "emp_name", label: "Tên nhân viên" },
                       {
-                        label: "Ngày Sinh",
                         name: "emp_birth_date",
+                        label: "Ngày sinh",
                         type: "date",
                       },
-                      { label: "CCCD", name: "emp_cccd", type: "text" },
-                      { label: "Địa Chỉ", name: "emp_address", type: "text" },
-                      {
-                        label: "Số Điện Thoại",
-                        name: "emp_phone",
-                        type: "text",
-                      },
-                    ].map(({ label, name, type }) => (
-                      <div className="mb-3" key={name}>
-                        <label className="form-label">{label}:</label>
+                      { name: "emp_cccd", label: "CCCD" },
+                      { name: "emp_address", label: "Địa chỉ" },
+                      { name: "emp_phone", label: "Số điện thoại" },
+                    ].map(({ name, label, type = "text" }, idx) => (
+                      <div className="mb-3" key={idx}>
+                        <label className="form-label">{label}</label>
                         <input
                           type={type}
                           name={name}
                           value={newEmployee[name]}
                           onChange={handleInputChange}
                           className="form-control"
-                          required
                         />
                       </div>
                     ))}
@@ -521,7 +557,7 @@ export default function Employee() {
                       <button
                         type="button"
                         className="btn btn-secondary"
-                        onClick={handleCloseForm}
+                        onClick={() => setShowForm(false)}
                       >
                         Hủy
                       </button>
@@ -579,7 +615,7 @@ export default function Employee() {
                       </button>
                       <button
                         className="btn btn-danger btn-sm"
-                        onClick={() => handleDelete(employee.emp_id)}
+                        onClick={() => handleShowModal(employee.emp_id)}
                       >
                         Xóa
                       </button>
@@ -591,7 +627,6 @@ export default function Employee() {
           </div>
         </div>
       </div>
-
       <div
         className="modal fade"
         id="AddCinemaModal"
@@ -651,6 +686,37 @@ export default function Employee() {
                 onClick={handleSaveCinema}
               >
                 Lưu thay đổi
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Modal xác nhận xóa */}
+      <div
+        className={`modal ${showModal ? "d-block" : "d-none"}`}
+        tabIndex="-1"
+        role="dialog"
+      >
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Xác nhận xóa</h5>
+              <button
+                type="button"
+                className="btn-close"
+                aria-label="Close"
+                onClick={handleCloseModal}
+              ></button>
+            </div>
+            <div className="modal-body">
+              Bạn có chắc chắn muốn xóa nhân viên này?
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-secondary" onClick={handleCloseModal}>
+                Hủy
+              </button>
+              <button className="btn btn-danger" onClick={handleDelete}>
+                Xóa
               </button>
             </div>
           </div>

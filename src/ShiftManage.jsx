@@ -29,7 +29,7 @@ const ShiftFormModal = ({
     <div className="modal-dialog modal-dialog-centered" role="document">
       <div className="modal-content">
         <div className="modal-header">
-          <h5 className="modal-title">Thêm Ca Làm Việc</h5>
+          <h5 className="modal-title">Chấm Công Cho</h5>
           <button
             type="button"
             className="btn-close"
@@ -121,13 +121,13 @@ const ShiftManage = () => {
       };
 
       await AxiosInstance.post("/workhour", newShift);
-      toast.success("Thêm ca thành công!");
+      toast.success("Chấm công thành công!");
       setWorkHours((prev) => [...prev, newShift]);
-      setShowForm(false);
+
       setSelectedEmployee("");
       setWorkHourInput("");
     } catch {
-      toast.error("Thêm ca thất bại!");
+      toast.error("Chấm công thất bại!");
     }
   };
 

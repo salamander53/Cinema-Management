@@ -372,33 +372,36 @@ export default function Cinema() {
     fetchCinemas();
   }, []);
 
+  useEffect(() => {
+    filteredCinemas;
+  }, [filteredCinemas]);
+
   const handleFilter = (e) => {
     const value = e.target.value.toLowerCase();
     setFilter(value);
     setFilteredCinemas(
-      cinemas.filter(
-        (cinema) =>
-          cinema.cinema_id.toLowerCase().includes(value) ||
-          cinema.cinema_name.toLowerCase().includes(value) ||
-          cinema.cinema_address.toLowerCase().includes(value)
+      cinemas.filter((cinema) =>
+        cinema.cinema_name.toLowerCase().includes(value)
       )
     );
   };
 
   const handleAddCinema = async () => {
     if (!newCinema.cinema_name || !newCinema.cinema_address) {
-      alert("Please fill in all fields!");
+      toast.warn("Vui lòng điền đầy đủ!");
       return;
     }
     try {
       const response = await AxiosInstance.post("/cinema", newCinema);
+
       setCinemas((prev) => [...prev, response.data]);
       setFilteredCinemas((prev) => [...prev, response.data]);
       setNewCinema({ cinema_name: "", cinema_address: "" });
-      alert("Cinema added successfully!");
+      toast.success("Rạp thêm thành công!");
+      setShowAddCinemaForm(false);
     } catch (error) {
       console.error("Error adding cinema:", error);
-      alert("Failed to add cinema. Please try again.");
+      toast.error("Thêm rạp thất bại!.");
     }
   };
 
@@ -416,7 +419,7 @@ export default function Cinema() {
     } catch (error) {
       console.error("Error deleting cinema:", error);
       // alert("Failed to delete cinema. Please try again.");
-      toast.error("Error deleting cinema:", error);
+      toast.error("Lỗi khi xóa rạp: Rạp phim có nhân viên");
     }
   };
 
@@ -434,6 +437,29 @@ export default function Cinema() {
       toast.error("Rạp không có nhân viên.");
     }
   };
+
+  const handleDeleteEmployee = async (emp_id) => {
+    try {
+      // Xóa chức vụ
+      await AxiosInstance.delete("/currentpostion", {
+        data: { emp_id }, // API yêu cầu JSON payload
+      });
+
+      // Xóa nhân viên
+      await AxiosInstance.delete(`/employee/${emp_id}`);
+
+      // Cập nhật danh sách nhân viên
+      setEmployeeData((prev) =>
+        prev.filter((employee) => employee.emp_id !== emp_id)
+      );
+      toast.success("Xóa nhân viên thành công!");
+    } catch (error) {
+      console.error("Lỗi khi xóa nhân viên:", error);
+      toast.error("Lỗi khi xóa nhân viên. Vui lòng thử lại.");
+    }
+  };
+
+  const handleRemoveEmployee = async (emp_id) => {};
 
   return (
     <div className="container mt-4 " style={{ paddingTop: "100px" }}>
@@ -535,34 +561,44 @@ export default function Cinema() {
           <table className="table table-striped">
             <thead className="thead-dark">
               <tr>
-                <th>Cinema ID</th>
-                <th>Name</th>
-                <th>Address</th>
-                <th>Actions</th>
+                <th>ID</th>
+                <th>Tên Rạp</th>
+                <th>Địa Chỉ</th>
+
+                <th>Thao Tác</th>
               </tr>
             </thead>
             <tbody>
-              {filteredCinemas.map((cinema) => (
-                <tr key={cinema.cinema_id}>
-                  <td>{cinema.cinema_id}</td>
-                  <td>{cinema.cinema_name}</td>
-                  <td>{cinema.cinema_address}</td>
-                  <td>
-                    <button
-                      className="btn btn-info btn-sm me-2"
-                      onClick={() => handleViewEmployees(cinema.cinema_id)}
-                    >
-                      Xem nhân viên
-                    </button>
-                    <button
-                      className="btn btn-danger btn-sm me-2"
-                      onClick={() => handleDeleteCinema(cinema.cinema_id)}
-                    >
-                      Xóa
-                    </button>
+              {filteredCinemas.length > 0 ? (
+                filteredCinemas.map((cinema) => (
+                  <tr key={cinema.cinema_id}>
+                    <td>{cinema.cinema_id}</td>
+                    <td>{cinema.cinema_name}</td>
+                    <td>{cinema.cinema_address}</td>
+
+                    <td>
+                      <button
+                        className="btn btn-info btn-sm me-2"
+                        onClick={() => handleViewEmployees(cinema.cinema_id)}
+                      >
+                        Xem nhân viên
+                      </button>
+                      <button
+                        className="btn btn-danger btn-sm me-2"
+                        onClick={() => handleDeleteCinema(cinema.cinema_id)}
+                      >
+                        Xóa
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="text-center">
+                    Không có dữ liệu rạp phim.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
@@ -580,14 +616,13 @@ export default function Cinema() {
                 <h5 className="modal-title">Danh sách nhân viên</h5>
                 <button
                   type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
+                  className="btn-close"
                   aria-label="Close"
                   onClick={() => setShowEmployeeModal(false)}
                 ></button>
               </div>
               <div className="modal-body">
-                <table className="table table-striped ">
+                <table className="table table-striped">
                   <thead>
                     <tr>
                       <th>ID</th>
@@ -597,7 +632,7 @@ export default function Cinema() {
                       <th>Địa Chỉ</th>
                       <th>Số Điện Thoại</th>
                       <th>Mã Rạp</th>
-                      {/* <th>Hành Động</th> */}
+                      <th>Hành Động</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -610,22 +645,16 @@ export default function Cinema() {
                         <td>{employee.emp_address}</td>
                         <td>{employee.emp_phone}</td>
                         <td>{employee.cinema_id}</td>
-                        {/* <td>
-                          <button
-                            className="btn btn-success btn-sm me-2"
-                            data-bs-toggle="modal"
-                            data-bs-target="#AddCinemaModal"
-                            onClick={() => handleAppointClick(employee)}
-                          >
-                            Bổ Nhiệm
-                          </button>
+                        <td>
                           <button
                             className="btn btn-danger btn-sm"
-                            onClick={() => handleDelete(employee.emp_id)}
+                            onClick={() =>
+                              handleDeleteEmployee(employee.emp_id)
+                            }
                           >
                             Xóa
                           </button>
-                        </td> */}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

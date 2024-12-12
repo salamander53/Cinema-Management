@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const baseUrl = "http://20.249.67.154/";
+const baseUrl =
+  "https://cinemabackend-fgfcb8acfchagget.southeastasia-01.azurewebsites.net/";
 const AxiosInstance = axios.create({
   baseURL: baseUrl,
   timeout: 5000,

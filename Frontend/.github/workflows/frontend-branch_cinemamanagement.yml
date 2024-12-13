@@ -1,0 +1,79 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy Node.js app to Azure Web App - cinemamanagement
+
+on:
+  push:
+    branches:
+      - frontend-branch
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+
+      - name: npm install, build, and test
+        run: |
+          npm install
+          npm run build --if-present
+          npm run test --if-present
+      
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-app
+          path: .
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+      id-token: write #This is required for requesting the JWT
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: node-app
+      
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+<<<<<<< HEAD:Frontend/.github/workflows/frontend-branch_cinemamanagement.yml
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_7FB320328F7445BE85A26E74E766AC2D }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_2FD4735425174A18BFDE185AF831423D }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_3D637FCCA2574B8CA139039A00E9D2C2 }}
+
+      - name: 'Deploy to Azure Web App'
+        uses: azure/webapps-deploy@v3
+        id: deploy-to-webapp
+        with:
+          app-name: 'cinemamanagement'
+          slot-name: 'Production'
+          package: .
+=======
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_FCCA58B328A1429B9235E6808DFE0FC0 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_8E722963504C48579D510D38AF176544 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_4368288F5C1E4DC6A584ECD630BC3403 }}
+
+      - name: 'Deploy to Azure Web App'
+        uses: azure/webapps-deploy@v3
+        id: deploy-to-webapp
+        with:
+          app-name: 'cinemamanagement'
+          slot-name: 'Production'
+          package: .
+>>>>>>> f5ffc033ac0c1366845956ef163cca8cab8ef31e:.github/workflows/frontend-branch_cinemamanagement.yml
+          

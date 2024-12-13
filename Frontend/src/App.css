@@ -1,0 +1,7 @@
+body {
+  background-image: url('assets/logobk.png');
+  background-size: cover;
+  background-position: center 30%; /* Xê dịch ảnh xuống 30% từ trên xuống */
+  background-repeat: no-repeat;
+  background-color:rgb(234, 243, 255);
+}

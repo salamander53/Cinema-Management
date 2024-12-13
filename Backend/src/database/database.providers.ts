@@ -9,7 +9,7 @@ export const databaseProviders = [
     useFactory: async () => {
       const dataSource = new DataSource({
         type: 'mssql',
-        host: 'khoaserver.database.windows.net',
+        host: 'khoa.database.windows.net',
         port: 1433,
         username: 'khoa123',
         password: 'khoa@123',
